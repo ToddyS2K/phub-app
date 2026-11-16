@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>PHub Portafoglio</title>
+<title>PHub</title>
 <!--
   PHub - Mini App di Telegram (Fase 2, 16/11/2026). Pagina statica per GitHub Pages (repository phub-app).
   Nessun dato qui: l'archivio cifrato sta in un gist segreto e si decifra nel browser.
@@ -458,6 +458,7 @@ button.tile:hover { border-color: var(--accent); }
     h += '<div class="card"><h2>Da fare (' + todo.length + ")</h2>" + (todo.length ? '<div class="list">' + todo.map(comRow).join("") + "</div>" : '<div class="sub">Niente da fare.</div>') + "</div>";
     if (meet.length) h += '<div class="card"><h2>Assemblee convocate</h2>' + meet.map(function (r) {
       return '<div class="com"><span><div class="t">' + esc(r.riunione || "Riunione") + '</div><div class="m">' + esc(r.tipo || "") + "</div></span><span>" + dueBadge(r.data) + "</span>" +
+        (r.ordine_del_giorno ? '<span class="prose" style="grid-column:1/-1;font-size:13.5px;margin-top:6px"><b>Ordine del giorno</b>\n' + esc(r.ordine_del_giorno) + "</span>" : "") +
         (r.da_fare ? '<span class="r">' + esc(r.da_fare) + "</span>" : "") + "</div>"; }).join("") + "</div>";
     h += '<div class="card"><h2>Da leggere (' + read.length + ")</h2>" + (read.length ? '<div class="list">' + read.map(comRow).join("") + "</div>" : '<div class="sub">Tutto letto.</div>') + "</div>";
     return h;
