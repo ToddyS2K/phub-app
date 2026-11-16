@@ -97,6 +97,9 @@ nav.tabs button[aria-selected="true"] { background: var(--surface); color: var(-
 .item .nm { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .item .r { text-align: right; }
 .item .r .pct { font-size: 12.5px; }
+.item .ds { grid-column: 1 / -1; font-size: 12.5px; color: var(--muted); line-height: 1.35; margin-top: 2px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.desc { margin: 10px 0 0; font-size: 14px; line-height: 1.5; max-width: 70ch; }
 
 .back { display: inline-flex; align-items: center; gap: 4px; color: var(--accent); font-size: 14px; padding: 4px 0; }
 .dhead h1 { font-size: 22px; }
@@ -127,13 +130,48 @@ button.chip[aria-pressed="true"] { border-color: var(--accent); color: var(--acc
 .tip b { color: var(--fg); font-weight: 500; }
 #view { display: flex; flex-direction: column; gap: 12px; }
 footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 4px; }
+.hright { display: inline-flex; align-items: center; gap: 10px; margin-left: auto; }
+.chip.icon { padding: 6px 9px; display: inline-flex; align-items: center; color: var(--fg); }
+.chip.icon svg { width: 16px; height: 16px; display: block; }
+.home, .groups, .detail, .hist { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.dcol { display: contents; }            /* telefono: i riquadri del dettaglio in un'unica colonna, ordinati con .o1-.o4 */
+.o1 { order: 1; } .o2 { order: 2; } .o3 { order: 3; } .o4 { order: 4; }
+
+/* ---------------------------------------------------------------- schermi larghi: tablet, PC, schermo intero */
+@media (min-width: 900px) {
+  .app { max-width: 1280px; gap: 14px; }
+  h1 { font-size: 22px; }
+  nav.tabs { display: flex; gap: 6px; padding-top: 6px; }
+  nav.tabs button { padding: 8px 18px; font-size: 14.5px; }
+  .home { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; }
+  .home .kpis { grid-column: 1 / -1; grid-template-columns: 1.5fr repeat(4, minmax(0, 1fr)); }
+  .home .kpi.big { grid-column: auto; }
+  .kpi .val { font-size: 22px; }
+  .kpi.big .val { font-size: 30px; }
+  .alloc { grid-template-columns: 220px minmax(0, 1fr); gap: 24px; }
+  .donut { width: 220px; height: 220px; }
+  .groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .group { margin-top: 0; }
+  .detail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); align-items: start; }
+  .dhead { grid-column: 1 / -1; }
+  .dcol { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .grid2 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .hist { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: start; }
+  .tr { grid-template-columns: 6.2em 3.6em minmax(0, 1.4fr) minmax(0, 1fr) 9em; padding: 7px 0; }
+  .tr .x { grid-column: auto; text-align: right; order: 4; }
+  .tr .tot { order: 5; }
+}
+@media (min-width: 1400px) {
+  .groups { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .grid2 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
 </style>
 </head>
 <body>
 <div class="app">
   <header>
     <h1 id="title">Portafoglio</h1>
-    <span class="sub" id="sub"></span>
+    <span class="hright"><span class="sub" id="sub"></span><button type="button" class="chip icon" id="fs" hidden></button></span>
   </header>
   <div class="msg" id="msg">Carico i dati…</div>
   <nav class="tabs" id="tabs" role="tablist" hidden>
@@ -343,7 +381,7 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
         '<span class="r"><div class="num">' + money(c.value) + '</div><div class="pct num ' + cls(c.pnl) + '">' + smoney(c.pnl) + " · " + pct(c.pnl_pct) + "</div></span></button>";
     });
     h += "</div></div>";
-    return h;
+    return '<div class="home">' + h + "</div>";
   }
 
   // ---------------------------------------------------------------- titoli
@@ -354,12 +392,14 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
       h += '<div class="group card"><div class="ghead"><span class="t"><i style="background:' + catColor[n] + '"></i>' + esc(n) + '</span><span class="s num">' + num(c.weight, 1) + "% · " + money(c.value) + "</span></div><div class=\"list\">";
       s.positions.filter(function (r) { return r.category === n; }).forEach(function (r) {
         var p = D.posBy[r.conid] || {};
+        var ds = asset(r.conid).descrizione;
         h += '<button type="button" class="item" data-asset="' + esc(r.conid) + '"><span><span class="sym">' + esc(r.symbol) + '</span><div class="nm">' + esc(niceName(r.conid)) + '</div><div class="nm num">' + qty(p.qty) + " × " + money(p.mark, p.currency) + "</div></span>" +
-          '<span class="r"><div class="num">' + money(r.value) + '</div><div class="pct num ' + cls(r.pnl) + '">' + smoney(r.pnl) + " · " + pct(r.pnl_pct) + "</div></span></button>";
+          '<span class="r"><div class="num">' + money(r.value) + '</div><div class="pct num ' + cls(r.pnl) + '">' + smoney(r.pnl) + " · " + pct(r.pnl_pct) + "</div></span>" +
+          (ds ? '<span class="ds">' + esc(ds) + "</span>" : "") + "</button>";
       });
       h += "</div></div>";
     });
-    return h;
+    return '<div class="groups">' + h + "</div>";
   }
 
   // ---------------------------------------------------------------- dettaglio di un titolo
@@ -367,11 +407,13 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
     var i = ins(conid), a = asset(conid), p = D.posBy[conid], h = "";
     var row = (D.summary.positions || []).filter(function (r) { return r.conid === conid; })[0];
     h += '<button type="button" class="back" data-back>‹ Indietro</button>';
-    h += '<div class="dhead"><h1>' + esc(i.symbol || "") + '</h1><div class="sub">' + esc(niceName(conid)) + "</div>";
-    h += '<div class="chips">' + [a.categoria, i.isin, i.exchange, i.currency].filter(Boolean).map(function (x) { return '<span class="chip">' + esc(x) + "</span>"; }).join("") + "</div></div>";
+    h += '<div class="detail"><div class="dhead"><h1>' + esc(i.symbol || "") + '</h1><div class="sub">' + esc(niceName(conid)) + "</div>";
+    h += '<div class="chips">' + [a.categoria, i.isin, i.exchange, i.currency].filter(Boolean).map(function (x) { return '<span class="chip">' + esc(x) + "</span>"; }).join("") + "</div>";
+    if (a.descrizione) h += '<p class="desc">' + esc(a.descrizione) + "</p>";
+    h += '</div><div class="dcol">';
     if (p) {
       var cur = p.currency, fx = p.fx || 1, base = cur !== CUR;
-      h += '<div class="card"><h2>Posizione</h2><div class="grid2">' +
+      h += '<div class="card o1"><h2>Posizione</h2><div class="grid2">' +
         cell("Quantità", qty(p.qty)) +
         cell("Peso sull'investito", row && D.summary.invested ? num(row.value / D.summary.invested * 100, 1) + "%" : "–") +
         cell("Prezzo medio di carico", money(p.avg_price, cur, 4)) +
@@ -382,15 +424,16 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
         cell("Rendimento", '<span class="' + cls(p.pnl) + '">' + pct(p.cost ? p.pnl / p.cost * 100 : 0) + "</span>") +
         "</div>" + (base ? '<div class="sub" style="margin-top:8px">Valori in ' + esc(cur) + "; sotto, in " + esc(CUR) + " al cambio del " + dmy(p.date) + ".</div>" : "") + "</div>";
     } else {
-      h += '<div class="msg">Nessuna posizione aperta su questo titolo.</div>';
+      h += '<div class="msg o1">Nessuna posizione aperta su questo titolo.</div>';
     }
-    h += '<div class="card"><h2>Prezzi delle operazioni</h2><svg class="chart" id="achart" height="190"></svg><div class="tip" id="atip"></div></div>';
     var facts = [["Nome", a.nome || i.description], ["Indice", a.indice], ["TER", a.ter != null ? num(a.ter, 2) + "%" : null], ["Dividendi", a.dividendi],
       ["Replica", a.replica], ["Emittente", a.emittente], ["Domicilio", a.domicilio], ["ISIN", i.isin], ["Borsa", i.exchange], ["Tipo", [i.asset, i.sub].filter(Boolean).join(" · ")], ["Note", a.note]];
-    h += '<div class="card"><h2>Scheda</h2><dl class="facts">' + facts.filter(function (f) { return f[1]; }).map(function (f) { return "<dt>" + f[0] + "</dt><dd>" + esc(f[1]) + "</dd>"; }).join("") + "</dl></div>";
+    h += '<div class="card o3"><h2>Scheda</h2><dl class="facts">' + facts.filter(function (f) { return f[1]; }).map(function (f) { return "<dt>" + f[0] + "</dt><dd>" + esc(f[1]) + "</dd>"; }).join("") + "</dl></div>";
+    h += '</div><div class="dcol">';
+    h += '<div class="card o2"><h2>Prezzi delle operazioni</h2><svg class="chart" id="achart" height="190"></svg><div class="tip" id="atip"></div></div>';
     var trs = D.tradeList.filter(function (t) { return t.conid === conid; });
-    h += '<div class="card"><h2>Operazioni (' + trs.length + ")</h2>" + tradesHtml(trs, false) + "</div>";
-    return h;
+    h += '<div class="card o4"><h2>Operazioni (' + trs.length + ")</h2>" + tradesHtml(trs, false) + "</div>";
+    return h + "</div></div>";
   }
   function cell(l, v) { return '<div><div class="lbl">' + l + '</div><div class="v num">' + v + "</div></div>"; }
 
@@ -445,8 +488,9 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
         fact("Ritenute", smoney(c.withholdingTax), c.withholdingTax) + fact("Valore finale", money(c.endingValue)) +
         fact("Rendimento (TWR)", pct(c.twr), c.twr) + "</dl></div>";
     }
-    return h;
+    return '<div class="hist">' + h + "</div>";
   }
+  function wide() { return window.innerWidth >= 900; }
   function fact(l, v, sign) { return "<dt>" + l + '</dt><dd class="num ' + (sign != null ? cls(sign) : "") + '">' + v + "</dd>"; }
 
   // ---------------------------------------------------------------- grafici SVG
@@ -472,6 +516,7 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
 
   function drawNav() {
     var svg = $("nchart"), s = navSeries(), tip = $("ntip");
+    svg.setAttribute("height", wide() ? Math.max(320, Math.min(520, window.innerHeight - 260)) : 230);
     if (s.length < 2) { svg.outerHTML = '<div class="sub">Servono almeno due giorni di dati.</div>'; return; }
     var vals = s.map(function (p) { return p.v; }), f = frame(svg, Math.min.apply(null, vals), Math.max.apply(null, vals), short);
     var t0 = Date.parse(s[0].d), t1 = Date.parse(s[s.length - 1].d);
@@ -498,6 +543,7 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
 
   function drawAssetChart(conid) {
     var svg = $("achart"), tip = $("atip"), p = D.posBy[conid];
+    svg.setAttribute("height", wide() ? 300 : 190);
     var trs = D.tradeList.filter(function (t) { return t.conid === conid; }).slice().reverse();
     var snaps = Object.keys(D.snapshots || {}).sort().filter(function (d) { return D.snapshots[d][conid]; })
       .map(function (d) { return { d: d, v: D.snapshots[d][conid][1] }; });
@@ -537,6 +583,47 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
     });
   }
 
+  // ---------------------------------------------------------------- schermo intero
+  // In Telegram dalla Bot API 8.0 (requestFullscreen, anche su PC e tablet); fuori da Telegram lo schermo intero del
+  // browser dove c'e' (non su Safari dell'iPhone). Dove non si puo', il pulsante non compare. La scelta si ricorda
+  // su questo dispositivo e la Mini App si riapre a schermo intero.
+  var ICON_IN = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg>';
+  var ICON_OUT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 2v4H2M14 6h-4V2M10 14v-4h4M2 10h4v4"/></svg>';
+  function pref(v) {
+    try { if (v === undefined) return localStorage.getItem("phub.fs") === "1"; localStorage.setItem("phub.fs", v ? "1" : "0"); } catch (e) {}
+    return false;
+  }
+  function setupFullscreen() {
+    var b = $("fs");
+    var tgFs = inTg && typeof tg.requestFullscreen === "function" && tg.isVersionAtLeast && tg.isVersionAtLeast("8.0");
+    var docFs = !inTg && document.fullscreenEnabled && typeof root.requestFullscreen === "function";
+    if (!tgFs && !docFs) return;
+    function isFs() { return tgFs ? !!tg.isFullscreen : !!document.fullscreenElement; }
+    function show() {
+      var on = isFs();
+      b.innerHTML = on ? ICON_OUT : ICON_IN;
+      b.title = on ? "Esci dallo schermo intero" : "Schermo intero";
+      b.setAttribute("aria-label", b.title);
+      setTimeout(function () { if (D) render(); }, 80);
+    }
+    b.addEventListener("click", function () {
+      try {
+        if (tgFs) { if (isFs()) { tg.exitFullscreen(); pref(false); } else { tg.requestFullscreen(); pref(true); } }
+        else if (isFs()) document.exitFullscreen();
+        else root.requestFullscreen().catch(function () {});
+      } catch (e) {}
+    });
+    if (tgFs) {
+      tg.onEvent("fullscreenChanged", show);
+      tg.onEvent("fullscreenFailed", function (e) { if (e && e.error === "UNSUPPORTED") b.hidden = true; });
+      if (pref() && !isFs()) { try { tg.requestFullscreen(); } catch (e) {} }
+    } else {
+      document.addEventListener("fullscreenchange", show);
+    }
+    b.hidden = false;
+    show();
+  }
+
   // ---------------------------------------------------------------- avvio
   function start(data) {
     D = data;
@@ -548,6 +635,7 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
     $("foot").textContent = "Fonte: Interactive Brokers (report Flex)" + (up ? " · aggiornato il " + up.toLocaleString("it-IT", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "");
     history.replaceState({ view: "home" }, "");
     render();
+    setupFullscreen();
   }
 
   if (!window.crypto || !crypto.subtle || typeof DecompressionStream === "undefined") {
