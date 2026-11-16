@@ -130,6 +130,18 @@ button.chip[aria-pressed="true"] { border-color: var(--accent); color: var(--acc
 .tip b { color: var(--fg); font-weight: 500; }
 #view { display: flex; flex-direction: column; gap: 12px; }
 footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 4px; }
+.hleft { display: flex; flex-direction: column; gap: 0; }
+.crumb { font-size: 13px; padding: 0 0 2px; }
+.hub { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.tile { text-align: left; display: flex; flex-direction: column; gap: 6px; width: 100%; }
+button.tile:hover { border-color: var(--accent); }
+.tile .top { display: flex; align-items: center; gap: 10px; }
+.tile .ic { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: var(--accent); color: #fff; flex: none; }
+.tile .ic svg { width: 20px; height: 20px; }
+.tile .nm { font-weight: 600; font-size: 16px; }
+.tile .big { font-size: 24px; font-weight: 500; }
+.tile.soon { color: var(--muted); border-style: dashed; }
+.tile.soon .ic { background: var(--track); color: var(--muted); }
 .hright { display: inline-flex; align-items: center; gap: 10px; margin-left: auto; }
 .chip.icon { padding: 6px 9px; display: inline-flex; align-items: center; color: var(--fg); }
 .chip.icon svg { width: 16px; height: 16px; display: block; }
@@ -170,7 +182,7 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
 <body>
 <div class="app">
   <header>
-    <h1 id="title">Portafoglio</h1>
+    <div class="hleft"><button type="button" class="back crumb" id="crumb" hidden>‹ PHub</button><h1 id="title">PHub</h1></div>
     <span class="hright"><span class="sub" id="sub"></span><button type="button" class="chip icon" id="fs" hidden></button></span>
   </header>
   <div class="msg" id="msg">Carico i dati…</div>
@@ -271,7 +283,7 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
   }
 
   // ---------------------------------------------------------------- stato e navigazione
-  var D = null, DEMO = false, state = { view: "home", conid: null, filter: "", range: "1A" };
+  var D = null, DEMO = false, state = { view: "hub", conid: null, filter: "", range: "1A" };
   var COLORS = ["--c1", "--c2", "--c3", "--c4", "--c5", "--c6", "--c7"];
   var catColor = {};
 
@@ -290,6 +302,8 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
   function asset(conid) { return (D.assets || {})[conid] || {}; }
   function niceName(conid) { var a = asset(conid), i = ins(conid); return a.nome || i.description || i.symbol || ""; }
 
+  $("crumb").addEventListener("click", function () { go("hub"); });
+
   function go(view, conid, push) {
     state.view = view; state.conid = conid || null;
     if (push !== false) history.pushState({ view: view, conid: state.conid }, "");
@@ -297,7 +311,7 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
     window.scrollTo(0, 0);
   }
   window.addEventListener("popstate", function (e) {
-    var s = e.state || { view: "home" };
+    var s = e.state || { view: "hub" };
     state.view = s.view; state.conid = s.conid || null; render();
   });
   $("tabs").addEventListener("click", function (e) {
@@ -315,20 +329,48 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
     if (!inTg || !tg.BackButton) return;
     try { if (show) tg.BackButton.show(); else tg.BackButton.hide(); } catch (e) {}
   }
-  if (inTg && tg.BackButton) { try { tg.BackButton.onClick(function () { history.back(); }); } catch (e) {} }
+  if (inTg && tg.BackButton) { try { tg.BackButton.onClick(function () { if (state.view === "asset") history.back(); else go("hub"); }); } catch (e) {} }
 
   function rerender() { if (D) { var ci = 0; Object.keys(catColor).forEach(function (n) { if (!(D.categories[n] || {}).color) catColor[n] = n === "Da assegnare" ? tok("--c8") : tok(COLORS[ci++ % COLORS.length]); }); render(); } }
 
   function render() {
-    var v = state.view;
-    $("tabs").hidden = v === "asset";
+    var v = state.view, hub = v === "hub";
+    $("tabs").hidden = hub || v === "asset";
+    $("crumb").hidden = hub;
+    $("foot").hidden = hub;
+    $("title").textContent = hub ? "PHub" : "Portafoglio";
+    $("sub").textContent = (DEMO ? "DATI DI PROVA" + (hub ? "" : " · ") : "") + (hub ? "" : "dati al " + dmy(D.summary.date));
     Array.prototype.forEach.call($("tabs").children, function (b) { b.setAttribute("aria-selected", String(b.getAttribute("data-view") === v)); });
-    backButton(v === "asset");
-    var html = v === "assets" ? viewAssets() : v === "trades" ? viewTrades() : v === "history" ? viewHistory()
+    backButton(!hub);
+    var html = hub ? viewHub() : v === "assets" ? viewAssets() : v === "trades" ? viewTrades() : v === "history" ? viewHistory()
       : v === "asset" ? viewAsset(state.conid) : viewHome();
     $("view").innerHTML = html;
     if (v === "history") drawNav();
     if (v === "asset") drawAssetChart(state.conid);
+  }
+
+  // ---------------------------------------------------------------- home del PHub: un riquadro per servizio
+  // Per aggiungere un servizio: una voce in SERVICES (qui), la sua vista, e il pulsante in phub/services.py.
+  var ICONS = {
+    portfolio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>',
+    soon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>'
+  };
+  var SERVICES = [
+    { id: "portfolio", name: "Portafoglio", view: "home", tile: function () {
+      var s = D.summary;
+      return '<div class="big num">' + money(s.total) + "</div>" +
+        (s.day_change != null ? '<div class="num ' + cls(s.day_change) + '">' + smoney(s.day_change) + " (" + pct(s.day_change_pct) + ") ultimo giorno</div>" : "") +
+        '<div class="num ' + cls(s.pnl) + '">P&amp;L ' + smoney(s.pnl) + " (" + pct(s.pnl_pct) + ")</div>" +
+        '<div class="sub">Interactive Brokers · dati al ' + dmy(s.date) + "</div>";
+    } }
+  ];
+  function viewHub() {
+    var h = '<div class="hub">';
+    SERVICES.forEach(function (sv) {
+      h += '<button type="button" class="card tile" data-goto="' + sv.view + '"><span class="top"><span class="ic">' + ICONS[sv.id] + '</span><span class="nm">' + esc(sv.name) + "</span></span>" + sv.tile() + "</button>";
+    });
+    h += '<div class="card tile soon"><span class="top"><span class="ic">' + ICONS.soon + '</span><span class="nm">Altri servizi</span></span><div>In arrivo: quando ne aggiungiamo uno al PHub compare qui e sulla tastiera del bot.</div></div>';
+    return h + "</div>";
   }
 
   // ---------------------------------------------------------------- panoramica
@@ -629,11 +671,12 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
     D = data;
     if (!D.summary) throw new Error("archivio senza riepilogo: esegui 'python -m phub run'");
     prep();
-    $("msg").hidden = true; $("tabs").hidden = false; $("foot").hidden = false;
-    $("sub").textContent = (DEMO ? "DATI DI PROVA · " : "") + "dati al " + dmy(D.summary.date);
+    $("msg").hidden = true;
     var up = D.meta && D.meta.updated ? new Date(D.meta.updated) : null;
     $("foot").textContent = "Fonte: Interactive Brokers (report Flex)" + (up ? " · aggiornato il " + up.toLocaleString("it-IT", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "");
-    history.replaceState({ view: "home" }, "");
+    var sv = SERVICES.filter(function (x) { return x.id === params().s; })[0];   // #...&s=portfolio apre il servizio
+    state.view = sv ? sv.view : "hub";
+    history.replaceState({ view: state.view }, "");
     render();
     setupFullscreen();
   }
