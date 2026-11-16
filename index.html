@@ -125,6 +125,7 @@ button.chip[aria-pressed="true"] { border-color: var(--accent); color: var(--acc
 .ranges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
 .tip { font-size: 13px; min-height: 1.4em; color: var(--muted); }
 .tip b { color: var(--fg); font-weight: 500; }
+#view { display: flex; flex-direction: column; gap: 12px; }
 footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 4px; }
 </style>
 </head>
@@ -372,7 +373,7 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
       var cur = p.currency, fx = p.fx || 1, base = cur !== CUR;
       h += '<div class="card"><h2>Posizione</h2><div class="grid2">' +
         cell("Quantità", qty(p.qty)) +
-        cell("Peso", row && D.summary.invested ? num(row.value / D.summary.invested * 100, 1) + "% dell'investito" : "–") +
+        cell("Peso sull'investito", row && D.summary.invested ? num(row.value / D.summary.invested * 100, 1) + "%" : "–") +
         cell("Prezzo medio di carico", money(p.avg_price, cur, 4)) +
         cell("Prezzo di mercato", money(p.mark, cur, 4)) +
         cell("Valore", money(p.value, cur) + (base ? '<div class="sub">' + money(p.value * fx) + "</div>" : "")) +
@@ -416,7 +417,9 @@ footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 
     h += "</div>";
     var list = D.tradeList.filter(function (t) { return !state.filter || t.symbol === state.filter; });
     var buys = list.filter(function (t) { return t.side === "BUY"; }).length;
-    h += '<div class="sub">' + list.length + " operazioni · " + buys + " acquisti · " + (list.length - buys) + " vendite</div>";
+    var sells = list.length - buys;
+    h += '<div class="sub">' + list.length + (list.length === 1 ? " operazione · " : " operazioni · ") + buys + (buys === 1 ? " acquisto · " : " acquisti · ") +
+      sells + (sells === 1 ? " vendita" : " vendite") + "</div>";
     return h + '<div class="card">' + tradesHtml(list, true) + "</div>";
   }
 
