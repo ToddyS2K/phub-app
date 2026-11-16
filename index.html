@@ -575,7 +575,7 @@ button.tile:hover { border-color: var(--accent); }
     h += '<div class="card kpi"><div class="lbl">Liquidità</div><div class="val num">' + money(s.cash) + '</div><div class="det" style="color:var(--muted)">su Kraken</div></div>';
     h += '<div class="card kpi"><div class="lbl">Realizzato</div><div class="val num ' + cls(s.realized) + '">' + smoney(s.realized) + '</div><div class="det num" style="color:var(--muted)">staking ' + money(s.rewards_value) + "</div></div>";
     h += "</div>";
-    var ps = s.positions.filter(function (p) { return p.value != null; }), tot = ps.reduce(function (a, p) { return a + p.value; }, 0) || 1;
+    var ps = s.positions.filter(function (p) { return p.value != null && !p.dust; }), tot = ps.reduce(function (a, p) { return a + p.value; }, 0) || 1;
     var a0 = -Math.PI / 2, seg = "";
     ps.forEach(function (p, i) {
       var f = p.value / tot, a1 = a0 + f * 2 * Math.PI, R = 60, r = 40, s0 = a0 + 0.012, e0 = a1 - 0.012, lg = e0 - s0 > Math.PI ? 1 : 0;
@@ -586,11 +586,14 @@ button.tile:hover { border-color: var(--accent); }
     });
     h += '<div class="card"><h2>Allocazione</h2><div class="alloc"><svg class="donut" viewBox="0 0 150 150" role="img" aria-label="Allocazione per crypto">' + seg + "</svg><div class=\"legend\">" +
       ps.map(function (p, i) { return '<div class="lg"><i class="sw" style="background:' + kColor(i) + '"></i><span class="nm">' + esc(p.asset) + '</span><span class="num">' + num(p.weight, 1) + "%</span></div>"; }).join("") + "</div></div></div>";
-    h += '<div class="card"><h2>Crypto</h2><div class="list">' + s.positions.map(function (p) {
+    var dust = s.positions.filter(function (p) { return p.dust; });
+    h += '<div class="card"><h2>Crypto</h2><div class="list">' + s.positions.filter(function (p) { return !p.dust; }).map(function (p) {
       return '<button type="button" class="item" data-kasset="' + esc(p.asset) + '"><span><span class="sym">' + esc(p.asset) + '</span><div class="nm num">' + kq(p.qty) + (p.price != null ? " × " + money(p.price) : "") + "</div>" +
         '<div class="nm num">medio ' + (p.unknown_cost ? "sconosciuto" : money(p.avg_price)) + (p.rewards ? " · staking " + kq(p.rewards) : "") + "</div></span>" +
         '<span class="r"><div class="num">' + money(p.value) + '</div><div class="pct num ' + cls(p.pnl) + '">' + (p.unknown_cost ? "costo sconosciuto" : smoney(p.pnl) + " · " + pct(p.pnl_pct)) + "</div></span></button>";
-    }).join("") + "</div></div>";
+    }).join("") + "</div>" + (dust.length ? '<div class="sub" style="margin-top:8px">Più ' + dust.length + " briciole sotto 1 € (" + esc(dust.map(function (p) { return p.asset; }).join(", ")) + "): " +
+      money(dust.reduce(function (a, p) { return a + (p.value || 0); }, 0)) + " in tutto.</div>" : "") + "</div>";
+    if (s.window_start) h += '<div class="sub">Movimenti dal ' + dmy(s.window_start) + ": per le crypto già possedute allora, il costo di carico è il prezzo di quel giorno.</div>";
     if (s.unknown_cost && s.unknown_cost.length) h += '<div class="msg">Costo di carico sconosciuto per ' + esc(s.unknown_cost.join(", ")) + ": sono arrivate su Kraken da fuori. Indica il prezzo medio in config/crypto.toml.</div>";
     return h + "</div>";
   }
