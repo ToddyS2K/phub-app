@@ -58,9 +58,21 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
 [hidden] { display: none !important; }
 
-nav.tabs { position: sticky; top: 0; z-index: 5; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+nav.tabs { position: sticky; top: 0; z-index: 5; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none;
   background: var(--bg); padding: 4px 0 8px; }
-nav.tabs button { padding: 8px 4px; border-radius: 8px; font-size: 13.5px; color: var(--muted); border: 1px solid transparent; }
+nav.tabs::-webkit-scrollbar { display: none; }
+nav.tabs button { flex: 1 0 auto; padding: 8px 10px; border-radius: 8px; font-size: 13.5px; color: var(--muted); border: 1px solid transparent; white-space: nowrap; }
+.badge { display: inline-block; font-size: 11.5px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.badge.todo { color: var(--c3); border-color: var(--c3); }
+.badge.late { color: var(--down); border-color: var(--down); }
+.badge.soon { color: var(--c5); border-color: var(--c5); }
+.com { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; width: 100%; text-align: left; padding: 10px 2px; border-top: 1px solid var(--line); }
+.com:first-child { border-top: 0; }
+.com .t { font-weight: 600; }
+.com .m { font-size: 12.5px; color: var(--muted); }
+.com .r { grid-column: 1 / -1; font-size: 13px; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.prose { font-size: 14.5px; line-height: 1.55; white-space: pre-line; }
+a.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 8px; background: var(--accent); color: #fff; text-decoration: none; font-weight: 500; }
 nav.tabs button[aria-selected="true"] { background: var(--surface); color: var(--fg); font-weight: 600; border-color: var(--line); }
 
 .kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
@@ -154,7 +166,7 @@ button.tile:hover { border-color: var(--accent); }
   .app { max-width: 1280px; gap: 14px; }
   h1 { font-size: 22px; }
   nav.tabs { display: flex; gap: 6px; padding-top: 6px; }
-  nav.tabs button { padding: 8px 18px; font-size: 14.5px; }
+  nav.tabs button { flex: 0 0 auto; padding: 8px 18px; font-size: 14.5px; }
   .home { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; }
   .home .kpis { grid-column: 1 / -1; grid-template-columns: 1.5fr repeat(4, minmax(0, 1fr)); }
   .home .kpi.big { grid-column: auto; }
@@ -187,10 +199,6 @@ button.tile:hover { border-color: var(--accent); }
   </header>
   <div class="msg" id="msg">Carico i dati…</div>
   <nav class="tabs" id="tabs" role="tablist" hidden>
-    <button type="button" role="tab" data-view="home" aria-selected="true">Panoramica</button>
-    <button type="button" role="tab" data-view="assets" aria-selected="false">Titoli</button>
-    <button type="button" role="tab" data-view="trades" aria-selected="false">Operazioni</button>
-    <button type="button" role="tab" data-view="history" aria-selected="false">Storico</button>
   </nav>
   <main id="view"></main>
   <footer id="foot" hidden></footer>
@@ -318,7 +326,10 @@ button.tile:hover { border-color: var(--accent); }
     var b = e.target.closest("button[data-view]"); if (b) go(b.getAttribute("data-view"));
   });
   $("view").addEventListener("click", function (e) {
+    var ext = e.target.closest("a[data-ext]");
+    if (ext && inTg && tg.openLink) { e.preventDefault(); try { tg.openLink(ext.href); } catch (err) { window.open(ext.href, "_blank"); } return; }
     var a = e.target.closest("[data-asset]"); if (a) { go("asset", a.getAttribute("data-asset")); return; }
+    var cm = e.target.closest("[data-com]"); if (cm) { go("c-com", cm.getAttribute("data-com")); return; }
     var gt = e.target.closest("[data-goto]"); if (gt) { go(gt.getAttribute("data-goto")); return; }
     var bk = e.target.closest("[data-back]"); if (bk) { history.back(); return; }
     var f = e.target.closest("[data-filter]"); if (f) { state.filter = f.getAttribute("data-filter"); render(); return; }
@@ -329,40 +340,78 @@ button.tile:hover { border-color: var(--accent); }
     if (!inTg || !tg.BackButton) return;
     try { if (show) tg.BackButton.show(); else tg.BackButton.hide(); } catch (e) {}
   }
-  if (inTg && tg.BackButton) { try { tg.BackButton.onClick(function () { if (state.view === "asset") history.back(); else go("hub"); }); } catch (e) {} }
+  var DETAIL = { asset: "portfolio", "c-com": "condominio" };   // viste di dettaglio: Indietro torna alla lista
+  if (inTg && tg.BackButton) { try { tg.BackButton.onClick(function () { if (DETAIL[state.view]) history.back(); else go("hub"); }); } catch (e) {} }
 
   function rerender() { if (D) { var ci = 0; Object.keys(catColor).forEach(function (n) { if (!(D.categories[n] || {}).color) catColor[n] = n === "Da assegnare" ? tok("--c8") : tok(COLORS[ci++ % COLORS.length]); }); render(); } }
 
+  function serviceOf(v) {
+    if (v === "hub") return null;
+    if (DETAIL[v]) return byId(DETAIL[v]);
+    return SERVICES.filter(function (s) { return s.tabs.some(function (t) { return t[0] === v; }); })[0] || null;
+  }
+  function byId(id) { return SERVICES.filter(function (s) { return s.id === id; })[0]; }
+
   function render() {
-    var v = state.view, hub = v === "hub";
-    $("tabs").hidden = hub || v === "asset";
+    var v = state.view, hub = v === "hub", sv = serviceOf(v);
+    if (!hub && !sv) { state.view = v = "hub"; hub = true; }
+    $("tabs").hidden = hub || !!DETAIL[v];
+    if (sv) $("tabs").innerHTML = sv.tabs.map(function (t) { return '<button type="button" role="tab" data-view="' + t[0] + '" aria-selected="' + (t[0] === v) + '">' + t[1] + "</button>"; }).join("");
     $("crumb").hidden = hub;
     $("foot").hidden = hub;
-    $("title").textContent = hub ? "PHub" : "Portafoglio";
-    $("sub").textContent = (DEMO ? "DATI DI PROVA" + (hub ? "" : " · ") : "") + (hub ? "" : "dati al " + dmy(D.summary.date));
-    Array.prototype.forEach.call($("tabs").children, function (b) { b.setAttribute("aria-selected", String(b.getAttribute("data-view") === v)); });
+    $("title").textContent = hub ? "PHub" : sv.name;
+    $("sub").textContent = (DEMO ? "DATI DI PROVA" + (hub ? "" : " · ") : "") + (hub ? "" : sv.sub());
+    $("foot").textContent = hub ? "" : sv.foot();
     backButton(!hub);
-    var html = hub ? viewHub() : v === "assets" ? viewAssets() : v === "trades" ? viewTrades() : v === "history" ? viewHistory()
-      : v === "asset" ? viewAsset(state.conid) : viewHome();
-    $("view").innerHTML = html;
+    $("view").innerHTML = hub ? viewHub() : VIEWS[v]();
     if (v === "history") drawNav();
     if (v === "asset") drawAssetChart(state.conid);
+  }
+  var VIEWS = {
+    home: function () { return viewHome(); }, assets: function () { return viewAssets(); },
+    trades: function () { return viewTrades(); }, history: function () { return viewHistory(); },
+    asset: function () { return viewAsset(state.conid); },
+    "c-todo": function () { return cTodo(); }, "c-coms": function () { return cComs(); }, "c-cases": function () { return cCases(); },
+    "c-spese": function () { return cSpese(); }, "c-meet": function () { return cMeet(); }, "c-norme": function () { return cNorme(); },
+    "c-com": function () { return cCom(state.conid); }
+  };
+  function updated() {
+    var up = D.meta && D.meta.updated ? new Date(D.meta.updated) : null;
+    return up ? up.toLocaleString("it-IT", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "";
   }
 
   // ---------------------------------------------------------------- home del PHub: un riquadro per servizio
   // Per aggiungere un servizio: una voce in SERVICES (qui), la sua vista, e il pulsante in phub/services.py.
   var ICONS = {
     portfolio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>',
+    condominio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6M9 10h.01M15 10h.01"/></svg>',
     soon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>'
   };
   var SERVICES = [
-    { id: "portfolio", name: "Portafoglio", view: "home", tile: function () {
-      var s = D.summary;
-      return '<div class="big num">' + money(s.total) + "</div>" +
-        (s.day_change != null ? '<div class="num ' + cls(s.day_change) + '">' + smoney(s.day_change) + " (" + pct(s.day_change_pct) + ") ultimo giorno</div>" : "") +
-        '<div class="num ' + cls(s.pnl) + '">P&amp;L ' + smoney(s.pnl) + " (" + pct(s.pnl_pct) + ")</div>" +
-        '<div class="sub">Interactive Brokers · dati al ' + dmy(s.date) + "</div>";
-    } }
+    { id: "portfolio", name: "Portafoglio", view: "home",
+      tabs: [["home", "Panoramica"], ["assets", "Titoli"], ["trades", "Operazioni"], ["history", "Storico"]],
+      sub: function () { return "dati al " + dmy(D.summary.date); },
+      foot: function () { return "Fonte: Interactive Brokers (report Flex) · aggiornato il " + updated(); },
+      tile: function () {
+        var s = D.summary;
+        return '<div class="big num">' + money(s.total) + "</div>" +
+          (s.day_change != null ? '<div class="num ' + cls(s.day_change) + '">' + smoney(s.day_change) + " (" + pct(s.day_change_pct) + ") ultimo giorno</div>" : "") +
+          '<div class="num ' + cls(s.pnl) + '">P&amp;L ' + smoney(s.pnl) + " (" + pct(s.pnl_pct) + ")</div>" +
+          '<div class="sub">Interactive Brokers · dati al ' + dmy(s.date) + "</div>";
+      } },
+    { id: "condominio", name: "Condominio", view: "c-todo",
+      tabs: [["c-todo", "Da fare"], ["c-coms", "Comunicazioni"], ["c-cases", "Pratiche"], ["c-spese", "Spese"], ["c-meet", "Assemblee"], ["c-norme", "Norme"]],
+      sub: function () { return "Coto Real" + (C().meta.last_delivery ? " · aggiornato il " + dmy(C().meta.last_delivery) : ""); },
+      foot: function () { return "Fonte: email dell'amministrazione (etichetta Coto Real), riassunte dalla routine Claude. Originali e allegati restano in Gmail."; },
+      tile: function () {
+        var s = C().summary;
+        if (!s) return '<div class="sub">In attesa della prima consegna della routine.</div>';
+        var n = s.next_deadline;
+        return '<div class="big num">' + s.todo + ' <span style="font-size:15px;font-weight:400">da fare</span></div>' +
+          (n ? '<div>Prossima scadenza: <b>' + dmy(n.scadenza) + "</b> · " + esc(n.oggetto || "") + "</div>" : '<div class="sub">Nessuna scadenza in arrivo</div>') +
+          "<div>" + s.to_read + " da leggere · " + s.open_cases + (s.open_cases === 1 ? " pratica aperta" : " pratiche aperte") + "</div>" +
+          '<div class="sub">Coto Real · ' + (s.last_delivery ? "aggiornato il " + dmy(s.last_delivery) : "") + "</div>";
+      } }
   ];
   function viewHub() {
     var h = '<div class="hub">';
@@ -371,6 +420,126 @@ button.tile:hover { border-color: var(--accent); }
     });
     h += '<div class="card tile soon"><span class="top"><span class="ic">' + ICONS.soon + '</span><span class="nm">Altri servizi</span></span><div>In arrivo: quando ne aggiungiamo uno al PHub compare qui e sulla tastiera del bot.</div></div>';
     return h + "</div>";
+  }
+
+  // ---------------------------------------------------------------- Condominio (sezione "condominio" dell'archivio)
+  function C() {
+    var c = D.condominio || {};
+    ["comunicazioni", "spese", "riunioni", "decisioni", "norme", "pratiche"].forEach(function (k) { c[k] = c[k] || {}; });
+    c.meta = c.meta || {};
+    return c;
+  }
+  function list(obj) { return Object.keys(obj).map(function (k) { var x = obj[k]; x.id = k; return x; }); }
+  function byDate(field) { return function (a, b) { return (b[field] || "").localeCompare(a[field] || ""); }; }
+  function stateOf(x) { var s = C().summary; return (s && s.states && s.states[x.id]) || x.stato || "Da leggere"; }
+  function daysTo(d) { return d ? Math.round((Date.parse(d.slice(0, 10)) - Date.parse(new Date().toISOString().slice(0, 10))) / 864e5) : null; }
+  function dueBadge(d) {
+    var n = daysTo(d); if (n == null) return "";
+    var cl = n < 0 ? "late" : n <= 7 ? "soon" : "";
+    var tx = n < 0 ? "scaduta " + dmy(d) : n === 0 ? "oggi" : n === 1 ? "domani" : "entro " + dmy(d);
+    return '<span class="badge ' + cl + '">' + tx + "</span>";
+  }
+  function comRow(x) {
+    var st = stateOf(x);
+    return '<button type="button" class="com" data-com="' + esc(x.id) + '"><span><div class="t">' + esc(x.oggetto || "(senza oggetto)") + '</div><div class="m">' +
+      dmy(x.data) + (x.categoria ? " · " + esc(x.categoria) : "") + (x.amministrazione ? " · " + esc(x.amministrazione) : "") + "</div></span>" +
+      '<span style="text-align:right">' + (st === "Da fare" ? '<span class="badge todo">da fare</span> ' : st === "Da leggere" ? '<span class="badge">da leggere</span> ' : "") +
+      (st !== "Archiviata" && x.scadenza ? dueBadge(x.scadenza) : "") + "</span>" +
+      (x.riassunto ? '<span class="r">' + esc(x.riassunto) + "</span>" : "") + "</button>";
+  }
+  function empty(t) { return '<div class="msg">' + t + "</div>"; }
+  function cTodo() {
+    var coms = list(C().comunicazioni), s = C().summary || {};
+    var todo = coms.filter(function (x) { return stateOf(x) === "Da fare"; }).sort(function (a, b) { return (a.scadenza || "9999").localeCompare(b.scadenza || "9999"); });
+    var read = coms.filter(function (x) { return stateOf(x) === "Da leggere"; }).sort(byDate("data"));
+    var meet = list(C().riunioni).filter(function (r) { return r.stato === "Convocata" && daysTo(r.data) >= 0; });
+    var h = "";
+    if (s.stale_days > 3) h += '<div class="msg err">La routine non manda dati da ' + s.stale_days + " giorni: controllala su claude.ai.</div>";
+    h += '<div class="card"><h2>Da fare (' + todo.length + ")</h2>" + (todo.length ? '<div class="list">' + todo.map(comRow).join("") + "</div>" : '<div class="sub">Niente da fare.</div>') + "</div>";
+    if (meet.length) h += '<div class="card"><h2>Assemblee convocate</h2>' + meet.map(function (r) {
+      return '<div class="com"><span><div class="t">' + esc(r.riunione || "Riunione") + '</div><div class="m">' + esc(r.tipo || "") + "</div></span><span>" + dueBadge(r.data) + "</span>" +
+        (r.da_fare ? '<span class="r">' + esc(r.da_fare) + "</span>" : "") + "</div>"; }).join("") + "</div>";
+    h += '<div class="card"><h2>Da leggere (' + read.length + ")</h2>" + (read.length ? '<div class="list">' + read.map(comRow).join("") + "</div>" : '<div class="sub">Tutto letto.</div>') + "</div>";
+    return h;
+  }
+  function cComs() {
+    var coms = list(C().comunicazioni).sort(byDate("data"));
+    if (!coms.length) return empty("Nessuna comunicazione in archivio.");
+    var h = '<div class="card"><div class="list">', month = "";
+    coms.forEach(function (x) {
+      var m = (x.data || "").slice(0, 7);
+      if (m && m !== month) { month = m; h += '<div class="month">' + MONTHS_L[+m.slice(5, 7) - 1] + " " + m.slice(0, 4) + "</div>"; }
+      h += comRow(x);
+    });
+    return h + "</div></div>";
+  }
+  function cCom(id) {
+    var x = C().comunicazioni[id]; if (!x) return empty("Comunicazione non trovata.");
+    var st = stateOf(Object.assign({ id: id }, x));
+    var h = '<button type="button" class="back" data-back>‹ Indietro</button><div class="dhead"><h1 style="font-size:20px">' + esc(x.oggetto || "") + '</h1><div class="chips">' +
+      [dmy(x.data), x.amministrazione, x.categoria, st].filter(Boolean).map(function (t) { return '<span class="chip">' + esc(t) + "</span>"; }).join("") +
+      (x.scadenza ? " " + dueBadge(x.scadenza) : "") + "</div></div>";
+    h += '<div class="card"><h2>Riassunto</h2><div class="prose">' + esc(x.riassunto || "—") + "</div></div>";
+    var facts = [["Mittente", x.mittente], ["Allegati", x.allegati], ["Scadenza", x.scadenza ? dmy(x.scadenza) : null]];
+    h += '<div class="card"><dl class="facts">' + facts.filter(function (f) { return f[1]; }).map(function (f) { return "<dt>" + f[0] + "</dt><dd>" + esc(f[1]) + "</dd>"; }).join("") + "</dl>" +
+      (x.link ? '<div style="margin-top:12px"><a class="btn" href="' + esc(x.link) + '" target="_blank" rel="noopener" data-ext>Apri l\'email in Gmail</a></div>' : "") + "</div>";
+    var sp = list(C().spese).filter(function (s) { return s.comunicazione === id; });
+    if (sp.length) h += '<div class="card"><h2>Spese collegate</h2>' + sp.map(speseRow).join("") + "</div>";
+    return h;
+  }
+  function cCases() {
+    var ps = list(C().pratiche).sort(function (a, b) { return ((a.stato === "Chiusa") - (b.stato === "Chiusa")) || (b.aggiornamento || "").localeCompare(a.aggiornamento || ""); });
+    if (!ps.length) return empty("Nessuna pratica.");
+    return ps.map(function (p) {
+      var cl = p.stato === "Chiusa" ? "" : p.stato === "In attesa di risposta" ? "soon" : "todo";
+      return '<div class="card"><div class="ghead"><span class="t">' + esc(p.pratica || "") + '</span><span class="badge ' + cl + '">' + esc(p.stato || "Aperta") + '</span></div><dl class="facts">' +
+        [["Tipo", p.tipo], ["Controparte", p.controparte], ["Aperta il", p.apertura ? dmy(p.apertura) : null], ["Ultimo aggiornamento", p.aggiornamento ? dmy(p.aggiornamento) : null],
+         ["Situazione", p.situazione], ["Prossimo passo", p.prossimo_passo]].filter(function (f) { return f[1]; }).map(function (f) { return "<dt>" + f[0] + "</dt><dd>" + esc(f[1]) + "</dd>"; }).join("") +
+        "</dl>" + (p.link ? '<div style="margin-top:10px"><a class="btn" href="' + esc(p.link) + '" target="_blank" rel="noopener" data-ext>Apri il thread in Gmail</a></div>' : "") + "</div>";
+    }).join("");
+  }
+  function speseRow(s) {
+    return '<div class="com"><span><div class="t">' + esc(s.voce || "") + '</div><div class="m">' + [s.tipo, s.periodo, s.data ? dmy(s.data) : null].filter(Boolean).map(esc).join(" · ") + "</div></span>" +
+      '<span style="text-align:right"><div class="num">' + (s.importo != null ? money(s.importo) : '<span class="sub">importo nel PDF</span>') + "</div>" + (s.scadenza ? dueBadge(s.scadenza) : "") + "</span>" +
+      (s.note ? '<span class="r">' + esc(s.note) + "</span>" : "") + "</div>";
+  }
+  function cSpese() {
+    var sp = list(C().spese).sort(byDate("data"));
+    if (!sp.length) return empty("Nessuna spesa in archivio.");
+    var years = {};
+    sp.forEach(function (s) { var y = (s.data || "").slice(0, 4) || "—"; years[y] = years[y] || { tot: 0, items: [] }; years[y].items.push(s); if (s.importo != null) years[y].tot += s.importo; });
+    return Object.keys(years).sort().reverse().map(function (y) {
+      return '<div class="card"><div class="ghead"><span class="t">' + y + '</span><span class="s num">' + (years[y].tot ? "totale noto " + money(years[y].tot) : "") + "</span></div>" + years[y].items.map(speseRow).join("") + "</div>";
+    }).join("") + '<div class="sub">Il totale comprende solo gli importi letti nelle email o nei PDF.</div>';
+  }
+  function cMeet() {
+    var rs = list(C().riunioni).sort(byDate("data")), dec = list(C().decisioni);
+    if (!rs.length && !dec.length) return empty("Nessuna assemblea in archivio.");
+    var h = rs.map(function (r) {
+      var ds = dec.filter(function (d) { return d.riunione === r.id; }).sort(function (a, b) { return (a.punto || 0) - (b.punto || 0); });
+      return '<div class="card"><div class="ghead"><span class="t">' + esc(r.riunione || "Riunione") + '</span><span class="badge">' + esc(r.stato || "") + "</span></div>" +
+        '<div class="sub">' + [r.tipo, r.data ? dmy(r.data) : null].filter(Boolean).map(esc).join(" · ") + "</div>" +
+        (r.ordine_del_giorno ? '<h2 style="margin-top:12px">Ordine del giorno</h2><div class="prose">' + esc(r.ordine_del_giorno) + "</div>" : "") +
+        (r.da_fare ? '<h2 style="margin-top:12px">Da fare / da pagare</h2><div class="prose">' + esc(r.da_fare) + "</div>" : "") +
+        (ds.length ? '<h2 style="margin-top:12px">Decisioni</h2>' + ds.map(decRow).join("") : r.decisioni ? '<h2 style="margin-top:12px">Decisioni</h2><div class="prose">' + esc(r.decisioni) + "</div>" : "") + "</div>";
+    }).join("");
+    var orphan = dec.filter(function (d) { return !rs.some(function (r) { return r.id === d.riunione; }); });
+    if (orphan.length) h += '<div class="card"><h2>Altre decisioni</h2>' + orphan.map(decRow).join("") + "</div>";
+    return h;
+  }
+  function decRow(d) {
+    var cl = d.esito === "Approvata" ? "up" : d.esito === "Respinta" ? "down" : "";
+    return '<div class="com"><span><div class="t">' + (d.punto ? d.punto + ". " : "") + esc(d.decisione || "") + '</div><div class="m">' + [d.argomento, d.rate].filter(Boolean).map(esc).join(" · ") + "</div></span>" +
+      '<span style="text-align:right"><div class="' + cl + '">' + esc(d.esito || "") + "</div>" + (d.importo != null ? '<div class="num">' + money(d.importo) + "</div>" : "") + "</span>" +
+      (d.cosa_fare ? '<span class="r"><b>Cosa fare:</b> ' + esc(d.cosa_fare) + "</span>" : "") + "</div>";
+  }
+  function cNorme() {
+    var ns = list(C().norme).sort(byDate("data"));
+    if (!ns.length) return empty("Nessuna norma in archivio.");
+    return ns.map(function (n) {
+      return '<div class="card"><div class="ghead"><span class="t">' + esc(n.norma || "") + "</span>" + (n.in_vigore ? '<span class="badge todo">in vigore</span>' : '<span class="badge">superata</span>') + "</div>" +
+        '<div class="sub">' + [n.argomento, n.data ? dmy(n.data) : null].filter(Boolean).map(esc).join(" · ") + '</div><div class="prose" style="margin-top:8px">' + esc(n.riassunto || "") + "</div></div>";
+    }).join("");
   }
 
   // ---------------------------------------------------------------- panoramica
@@ -672,8 +841,6 @@ button.tile:hover { border-color: var(--accent); }
     if (!D.summary) throw new Error("archivio senza riepilogo: esegui 'python -m phub run'");
     prep();
     $("msg").hidden = true;
-    var up = D.meta && D.meta.updated ? new Date(D.meta.updated) : null;
-    $("foot").textContent = "Fonte: Interactive Brokers (report Flex)" + (up ? " · aggiornato il " + up.toLocaleString("it-IT", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "");
     var sv = SERVICES.filter(function (x) { return x.id === params().s; })[0];   // #...&s=portfolio apre il servizio
     state.view = sv ? sv.view : "hub";
     history.replaceState({ view: state.view }, "");
