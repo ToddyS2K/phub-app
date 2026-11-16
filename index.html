@@ -330,6 +330,7 @@ button.tile:hover { border-color: var(--accent); }
     if (ext && inTg && tg.openLink) { e.preventDefault(); try { tg.openLink(ext.href); } catch (err) { window.open(ext.href, "_blank"); } return; }
     var a = e.target.closest("[data-asset]"); if (a) { go("asset", a.getAttribute("data-asset")); return; }
     var cm = e.target.closest("[data-com]"); if (cm) { go("c-com", cm.getAttribute("data-com")); return; }
+    var ka = e.target.closest("[data-kasset]"); if (ka) { go("k-asset", ka.getAttribute("data-kasset")); return; }
     var gt = e.target.closest("[data-goto]"); if (gt) { go(gt.getAttribute("data-goto")); return; }
     var bk = e.target.closest("[data-back]"); if (bk) { history.back(); return; }
     var f = e.target.closest("[data-filter]"); if (f) { state.filter = f.getAttribute("data-filter"); render(); return; }
@@ -340,7 +341,7 @@ button.tile:hover { border-color: var(--accent); }
     if (!inTg || !tg.BackButton) return;
     try { if (show) tg.BackButton.show(); else tg.BackButton.hide(); } catch (e) {}
   }
-  var DETAIL = { asset: "portfolio", "c-com": "condominio" };   // viste di dettaglio: Indietro torna alla lista
+  var DETAIL = { asset: "portfolio", "c-com": "condominio", "k-asset": "crypto" };   // viste di dettaglio: Indietro torna alla lista
   if (inTg && tg.BackButton) { try { tg.BackButton.onClick(function () { if (DETAIL[state.view]) history.back(); else go("hub"); }); } catch (e) {} }
 
   function rerender() { if (D) { var ci = 0; Object.keys(catColor).forEach(function (n) { if (!(D.categories[n] || {}).color) catColor[n] = n === "Da assegnare" ? tok("--c8") : tok(COLORS[ci++ % COLORS.length]); }); render(); } }
@@ -366,6 +367,7 @@ button.tile:hover { border-color: var(--accent); }
     $("view").innerHTML = hub ? viewHub() : VIEWS[v]();
     if (v === "history") drawNav();
     if (v === "asset") drawAssetChart(state.conid);
+    if (v === "k-hist") drawSeries("kchart", "ktip", Object.keys(K().snapshots || {}).sort().map(function (d) { return { d: d, v: K().snapshots[d].total, c: K().snapshots[d].cash }; }));
   }
   var VIEWS = {
     home: function () { return viewHome(); }, assets: function () { return viewAssets(); },
@@ -373,7 +375,9 @@ button.tile:hover { border-color: var(--accent); }
     asset: function () { return viewAsset(state.conid); },
     "c-todo": function () { return cTodo(); }, "c-coms": function () { return cComs(); }, "c-cases": function () { return cCases(); },
     "c-spese": function () { return cSpese(); }, "c-meet": function () { return cMeet(); }, "c-norme": function () { return cNorme(); },
-    "c-com": function () { return cCom(state.conid); }
+    "c-com": function () { return cCom(state.conid); },
+    "k-home": function () { return kHome(); }, "k-moves": function () { return kMoves(); }, "k-hist": function () { return kHist(); },
+    "k-asset": function () { return kAsset(state.conid); }
   };
   function updated() {
     var up = D.meta && D.meta.updated ? new Date(D.meta.updated) : null;
@@ -385,6 +389,7 @@ button.tile:hover { border-color: var(--accent); }
   var ICONS = {
     portfolio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>',
     condominio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6M9 10h.01M15 10h.01"/></svg>',
+    crypto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h5.5a3 3 0 0 1 0 6H9zM9 12h6.5a3 3 0 0 1 0 6H9zM9 6v12M11 3v3M14 3v3M11 18v3M14 18v3"/></svg>',
     soon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>'
   };
   var SERVICES = [
@@ -411,6 +416,18 @@ button.tile:hover { border-color: var(--accent); }
           (n ? '<div>Prossima scadenza: <b>' + dmy(n.scadenza) + "</b> · " + esc(n.oggetto || "") + "</div>" : '<div class="sub">Nessuna scadenza in arrivo</div>') +
           "<div>" + s.to_read + " da leggere · " + s.open_cases + (s.open_cases === 1 ? " pratica aperta" : " pratiche aperte") + "</div>" +
           '<div class="sub">Coto Real · ' + (s.last_delivery ? "aggiornato il " + dmy(s.last_delivery) : "") + "</div>";
+      } },
+    { id: "crypto", name: "Crypto", view: "k-home",
+      tabs: [["k-home", "Panoramica"], ["k-moves", "Movimenti"], ["k-hist", "Storico"]],
+      sub: function () { var s = K().summary; return s ? "dati al " + dmy(s.date) : ""; },
+      foot: function () { return "Fonte: Kraken (API in sola lettura). Prezzo medio di carico calcolato dai movimenti, in euro."; },
+      tile: function () {
+        var s = K().summary;
+        if (!s) return '<div class="sub">In attesa del primo aggiornamento da Kraken.</div>';
+        return '<div class="big num">' + money(s.total) + "</div>" +
+          (s.day_change != null ? '<div class="num ' + cls(s.day_change) + '">' + smoney(s.day_change) + " (" + pct(s.day_change_pct) + ") ultimo giorno</div>" : "") +
+          (s.pnl_pct != null ? '<div class="num ' + cls(s.pnl) + '">P&amp;L ' + smoney(s.pnl) + " (" + pct(s.pnl_pct) + ")</div>" : "") +
+          '<div class="sub">Kraken · ' + s.positions.length + (s.positions.length === 1 ? " crypto" : " crypto") + "</div>";
       } }
   ];
   function viewHub() {
@@ -541,6 +558,87 @@ button.tile:hover { border-color: var(--accent); }
       return '<div class="card"><div class="ghead"><span class="t">' + esc(n.norma || "") + "</span>" + (n.in_vigore ? '<span class="badge todo">in vigore</span>' : '<span class="badge">superata</span>') + "</div>" +
         '<div class="sub">' + [n.argomento, n.data ? dmy(n.data) : null].filter(Boolean).map(esc).join(" · ") + '</div><div class="prose" style="margin-top:8px">' + esc(n.riassunto || "") + "</div></div>";
     }).join("");
+  }
+
+  // ---------------------------------------------------------------- Crypto (sezione "crypto" dell'archivio, da Kraken)
+  function K() { var k = D.crypto || {}; k.snapshots = k.snapshots || {}; return k; }
+  function kColor(i) { return tok(COLORS[i % COLORS.length]); }
+  function kq(x) { return Number(x).toLocaleString("it-IT", { maximumFractionDigits: Math.abs(x) >= 1 ? 4 : 8 }); }
+  function kHome() {
+    var s = K().summary;
+    if (!s) return empty("Nessun dato: il primo aggiornamento da Kraken non è ancora avvenuto.");
+    var h = '<div class="home"><div class="kpis">';
+    h += '<div class="card kpi big"><div class="lbl">Totale</div><div class="val num">' + money(s.total) + "</div>" +
+      (s.day_change != null ? '<div class="det num ' + cls(s.day_change) + '">' + smoney(s.day_change) + " (" + pct(s.day_change_pct) + ") ultimo giorno</div>" : "") + "</div>";
+    h += '<div class="card kpi"><div class="lbl">P&amp;L non realizzato</div><div class="val num ' + cls(s.pnl) + '">' + smoney(s.pnl) + '</div><div class="det num ' + cls(s.pnl) + '">' + (s.pnl_pct != null ? pct(s.pnl_pct) : "–") + "</div></div>";
+    h += '<div class="card kpi"><div class="lbl">In crypto</div><div class="val num">' + money(s.invested) + '</div><div class="det num" style="color:var(--muted)">costo ' + money(s.cost) + "</div></div>";
+    h += '<div class="card kpi"><div class="lbl">Liquidità</div><div class="val num">' + money(s.cash) + '</div><div class="det" style="color:var(--muted)">su Kraken</div></div>';
+    h += '<div class="card kpi"><div class="lbl">Realizzato</div><div class="val num ' + cls(s.realized) + '">' + smoney(s.realized) + '</div><div class="det num" style="color:var(--muted)">staking ' + money(s.rewards_value) + "</div></div>";
+    h += "</div>";
+    var ps = s.positions.filter(function (p) { return p.value != null; }), tot = ps.reduce(function (a, p) { return a + p.value; }, 0) || 1;
+    var a0 = -Math.PI / 2, seg = "";
+    ps.forEach(function (p, i) {
+      var f = p.value / tot, a1 = a0 + f * 2 * Math.PI, R = 60, r = 40, s0 = a0 + 0.012, e0 = a1 - 0.012, lg = e0 - s0 > Math.PI ? 1 : 0;
+      if (f >= 0.9999) seg += '<circle cx="75" cy="75" r="50" fill="none" stroke="' + kColor(i) + '" stroke-width="20"/>';
+      else if (e0 > s0) seg += '<path fill="' + kColor(i) + '" d="M' + (75 + R * Math.cos(s0)) + " " + (75 + R * Math.sin(s0)) + " A60 60 0 " + lg + " 1 " + (75 + R * Math.cos(e0)) + " " + (75 + R * Math.sin(e0)) +
+        " L" + (75 + r * Math.cos(e0)) + " " + (75 + r * Math.sin(e0)) + " A40 40 0 " + lg + " 0 " + (75 + r * Math.cos(s0)) + " " + (75 + r * Math.sin(s0)) + ' Z"/>';
+      a0 = a1;
+    });
+    h += '<div class="card"><h2>Allocazione</h2><div class="alloc"><svg class="donut" viewBox="0 0 150 150" role="img" aria-label="Allocazione per crypto">' + seg + "</svg><div class=\"legend\">" +
+      ps.map(function (p, i) { return '<div class="lg"><i class="sw" style="background:' + kColor(i) + '"></i><span class="nm">' + esc(p.asset) + '</span><span class="num">' + num(p.weight, 1) + "%</span></div>"; }).join("") + "</div></div></div>";
+    h += '<div class="card"><h2>Crypto</h2><div class="list">' + s.positions.map(function (p) {
+      return '<button type="button" class="item" data-kasset="' + esc(p.asset) + '"><span><span class="sym">' + esc(p.asset) + '</span><div class="nm num">' + kq(p.qty) + (p.price != null ? " × " + money(p.price) : "") + "</div>" +
+        '<div class="nm num">medio ' + (p.unknown_cost ? "sconosciuto" : money(p.avg_price)) + (p.rewards ? " · staking " + kq(p.rewards) : "") + "</div></span>" +
+        '<span class="r"><div class="num">' + money(p.value) + '</div><div class="pct num ' + cls(p.pnl) + '">' + (p.unknown_cost ? "costo sconosciuto" : smoney(p.pnl) + " · " + pct(p.pnl_pct)) + "</div></span></button>";
+    }).join("") + "</div></div>";
+    if (s.unknown_cost && s.unknown_cost.length) h += '<div class="msg">Costo di carico sconosciuto per ' + esc(s.unknown_cost.join(", ")) + ": sono arrivate su Kraken da fuori. Indica il prezzo medio in config/crypto.toml.</div>";
+    return h + "</div>";
+  }
+  function kMoveRow(m) {
+    var neg = m.kind === "Vendita" || m.kind === "Prelievo" || m.kind === "Prelievo EUR";
+    var what = m.asset ? kq(Math.abs(m.qty || 0)) + " " + esc(m.asset) : "";
+    var from = m.from ? " da " + Object.keys(m.from).map(function (a) { return kq(m.from[a]) + " " + esc(a); }).join(" + ") : "";
+    return '<div class="tr"><span class="d num">' + (m.month ? MONTHS[+m.month.slice(5, 7) - 1] + " " + m.month.slice(0, 4) : dmy(m.date)) + '</span><span class="side ' + (neg ? "down" : "up") + '">' + esc(m.kind) + "</span>" +
+      '<span class="q num">' + what + from + (m.price ? " × " + money(m.price) : "") + '</span><span class="tot num">' + (m.eur ? money(Math.abs(m.eur)) : "") + "</span>" +
+      (m.realized ? '<span class="x num">realizzato <span class="' + cls(m.realized) + '">' + smoney(m.realized) + "</span></span>" : "") + "</div>";
+  }
+  function kMoves() {
+    var s = K().summary; if (!s) return empty("Nessun movimento.");
+    var ms = s.moves.slice().reverse(), h = '<div class="card"><div class="trs">', month = "";
+    ms.forEach(function (m) {
+      var mo = m.date.slice(0, 7);
+      if (mo !== month) { month = mo; h += '<div class="month">' + MONTHS_L[+mo.slice(5, 7) - 1] + " " + mo.slice(0, 4) + "</div>"; }
+      h += kMoveRow(m);
+    });
+    return h + '</div></div><div class="sub">Euro versati ' + money(s.eur_deposited) + " · prelevati " + money(s.eur_withdrawn) + ". Le ricompense di staking sono raggruppate per mese.</div>";
+  }
+  function kAsset(a) {
+    var s = K().summary, p = (s.positions || []).filter(function (x) { return x.asset === a; })[0];
+    var h = '<button type="button" class="back" data-back>‹ Indietro</button><div class="dhead"><h1>' + esc(a) + "</h1></div>";
+    if (p) h += '<div class="card"><h2>Posizione</h2><div class="grid2">' + cell("Quantità", kq(p.qty)) + cell("Peso", num(p.weight, 1) + "%") +
+      cell("Prezzo medio di carico", p.unknown_cost ? "sconosciuto" : money(p.avg_price)) + cell("Prezzo di mercato", money(p.price)) +
+      cell("Valore", money(p.value)) + cell("Costo", money(p.cost)) + cell("P&amp;L", '<span class="' + cls(p.pnl) + '">' + smoney(p.pnl) + "</span>") +
+      cell("Staking ricevuto", kq(p.rewards)) + "</div></div>";
+    var ms = s.moves.filter(function (m) { return m.asset === a || (m.from && m.from[a]); }).reverse();
+    return h + '<div class="card"><h2>Movimenti (' + ms.length + ')</h2><div class="trs">' + ms.map(kMoveRow).join("") + "</div></div>";
+  }
+  function kHist() {
+    return '<div class="card"><h2>Valore del conto Kraken</h2><div class="tip" id="ktip"></div><svg class="chart" id="kchart" height="230"></svg></div>' +
+      '<div class="sub">Lo storico parte dal primo aggiornamento del PHub: Kraken non fornisce i valori passati del conto.</div>';
+  }
+  function drawSeries(svgId, tipId, s) {
+    var svg = $(svgId), tip = $(tipId);
+    if (!svg) return;
+    if (s.length < 2) { svg.outerHTML = '<div class="sub">Servono almeno due giorni di dati.</div>'; return; }
+    svg.setAttribute("height", wide() ? Math.max(320, Math.min(520, window.innerHeight - 260)) : 230);
+    var vals = s.map(function (p) { return p.v; }), f = frame(svg, Math.min.apply(null, vals), Math.max.apply(null, vals), short);
+    var t0 = Date.parse(s[0].d), t1 = Date.parse(s[s.length - 1].d);
+    var x = function (d) { return f.L + (Date.parse(d) - t0) / ((t1 - t0) || 1) * (f.W - f.L - f.R); };
+    var line = s.map(function (p, i) { return (i ? "L" : "M") + x(p.d).toFixed(1) + " " + f.y(p.v).toFixed(1); }).join(" ");
+    var ch = vals[vals.length - 1] - vals[0], col = tok(ch >= 0 ? "--up" : "--down");
+    svg.innerHTML = f.grid + '<path d="' + line + '" fill="none" stroke="' + col + '" stroke-width="2"/>' +
+      '<text x="' + f.L + '" y="' + (f.H - 6) + '">' + dm(s[0].d) + '</text><text x="' + (f.W - f.R) + '" y="' + (f.H - 6) + '" text-anchor="end">' + dm(s[s.length - 1].d) + "</text>";
+    tip.innerHTML = "dal " + dmy(s[0].d) + ': <b class="num ' + cls(ch) + '">' + smoney(ch) + "</b>";
   }
 
   // ---------------------------------------------------------------- panoramica
