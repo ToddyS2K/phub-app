@@ -320,7 +320,7 @@ button.tile:hover { border-color: var(--accent); }
   }
   window.addEventListener("popstate", function (e) {
     var s = e.state || { view: "hub" };
-    state.view = s.view; state.conid = s.conid || null; render();
+    state.view = s.view; state.conid = s.conid || null; if (D) render();
   });
   $("tabs").addEventListener("click", function (e) {
     var b = e.target.closest("button[data-view]"); if (b) go(b.getAttribute("data-view"));
@@ -379,8 +379,9 @@ button.tile:hover { border-color: var(--accent); }
     "k-home": function () { return kHome(); }, "k-moves": function () { return kMoves(); }, "k-hist": function () { return kHist(); },
     "k-asset": function () { return kAsset(state.conid); }
   };
-  function updated() {
-    var up = D.meta && D.meta.updated ? new Date(D.meta.updated) : null;
+  // ogni servizio ha il suo orario di aggiornamento (meta.updated e' l'ultimo scritto, di qualunque servizio)
+  function updated(iso) {
+    var up = iso ? new Date(iso) : null;
     return up ? up.toLocaleString("it-IT", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "";
   }
 
@@ -396,7 +397,7 @@ button.tile:hover { border-color: var(--accent); }
     { id: "portfolio", name: "Portafoglio", view: "home",
       tabs: [["home", "Panoramica"], ["assets", "Titoli"], ["trades", "Operazioni"], ["history", "Storico"]],
       sub: function () { return "dati al " + dmy(D.summary.date); },
-      foot: function () { return "Fonte: Interactive Brokers (report Flex) · aggiornato il " + updated(); },
+      foot: function () { return "Fonte: Interactive Brokers (report Flex) · aggiornato il " + updated((D.meta || {}).updated_portfolio || (D.meta || {}).updated); },
       tile: function () {
         var s = D.summary;
         return '<div class="big num">' + money(s.total) + "</div>" +
@@ -420,7 +421,8 @@ button.tile:hover { border-color: var(--accent); }
     { id: "crypto", name: "Crypto", view: "k-home",
       tabs: [["k-home", "Panoramica"], ["k-moves", "Movimenti"], ["k-hist", "Storico"]],
       sub: function () { var s = K().summary; return s ? "dati al " + dmy(s.date) : ""; },
-      foot: function () { return "Fonte: Kraken (API in sola lettura). Prezzo medio di carico calcolato dai movimenti, in euro."; },
+      foot: function () { return "Fonte: Kraken (API in sola lettura). Prezzo medio di carico calcolato dai movimenti, in euro." +
+        ((K().meta || {}).updated ? " Aggiornato il " + updated(K().meta.updated) + "." : ""); },
       tile: function () {
         var s = K().summary;
         if (!s) return '<div class="sub">In attesa del primo aggiornamento da Kraken.</div>';
@@ -898,12 +900,20 @@ button.tile:hover { border-color: var(--accent); }
 
   // ---------------------------------------------------------------- schermo intero
   // In Telegram dalla Bot API 8.0 (requestFullscreen, anche su PC e tablet); fuori da Telegram lo schermo intero del
-  // browser dove c'e' (non su Safari dell'iPhone). Dove non si puo', il pulsante non compare. La scelta si ricorda
-  // su questo dispositivo e la Mini App si riapre a schermo intero.
+  // browser dove c'e' (non su Safari dell'iPhone). Dove non si puo', il pulsante non compare. Su PC e tablet la Mini
+  // App parte gia' a schermo intero; la scelta fatta col pulsante si ricorda su questo dispositivo e vale da allora.
   var ICON_IN = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg>';
   var ICON_OUT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 2v4H2M14 6h-4V2M10 14v-4h4M2 10h4v4"/></svg>';
-  function pref(v) {
-    try { if (v === undefined) return localStorage.getItem("phub.fs") === "1"; localStorage.setItem("phub.fs", v ? "1" : "0"); } catch (e) {}
+  function bigScreen() {                            // PC (Telegram Desktop, macOS, Web) o tablet (lato corto >= 600 px)
+    var p = (tg && tg.platform) || "";
+    if (["tdesktop", "macos", "weba", "webk", "unigram"].indexOf(p) >= 0) return true;
+    return Math.min(screen.width || 0, screen.height || 0) >= 600;
+  }
+  function pref(v) {                                 // senza scelta salvata: schermo intero sui dispositivi grandi
+    try {
+      if (v === undefined) { var s = localStorage.getItem("phub.fs"); return s === null ? bigScreen() : s === "1"; }
+      localStorage.setItem("phub.fs", v ? "1" : "0");
+    } catch (e) { return v === undefined ? bigScreen() : false; }
     return false;
   }
   function setupFullscreen() {
