@@ -900,22 +900,10 @@ button.tile:hover { border-color: var(--accent); }
 
   // ---------------------------------------------------------------- schermo intero
   // In Telegram dalla Bot API 8.0 (requestFullscreen, anche su PC e tablet); fuori da Telegram lo schermo intero del
-  // browser dove c'e' (non su Safari dell'iPhone). Dove non si puo', il pulsante non compare. Su PC e tablet la Mini
-  // App parte gia' a schermo intero; la scelta fatta col pulsante si ricorda su questo dispositivo e vale da allora.
+  // browser dove c'e' (non su Safari dell'iPhone). Dove non si puo', il pulsante non compare. La Mini App si apre
+  // sempre nella sua finestra: lo schermo intero solo col pulsante, quando lo si vuole.
   var ICON_IN = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg>';
   var ICON_OUT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 2v4H2M14 6h-4V2M10 14v-4h4M2 10h4v4"/></svg>';
-  function bigScreen() {                            // PC (Telegram Desktop, macOS, Web) o tablet (lato corto >= 600 px)
-    var p = (tg && tg.platform) || "";
-    if (["tdesktop", "macos", "weba", "webk", "unigram"].indexOf(p) >= 0) return true;
-    return Math.min(screen.width || 0, screen.height || 0) >= 600;
-  }
-  function pref(v) {                                 // senza scelta salvata: schermo intero sui dispositivi grandi
-    try {
-      if (v === undefined) { var s = localStorage.getItem("phub.fs"); return s === null ? bigScreen() : s === "1"; }
-      localStorage.setItem("phub.fs", v ? "1" : "0");
-    } catch (e) { return v === undefined ? bigScreen() : false; }
-    return false;
-  }
   function setupFullscreen() {
     var b = $("fs");
     var tgFs = inTg && typeof tg.requestFullscreen === "function" && tg.isVersionAtLeast && tg.isVersionAtLeast("8.0");
@@ -931,7 +919,7 @@ button.tile:hover { border-color: var(--accent); }
     }
     b.addEventListener("click", function () {
       try {
-        if (tgFs) { if (isFs()) { tg.exitFullscreen(); pref(false); } else { tg.requestFullscreen(); pref(true); } }
+        if (tgFs) { if (isFs()) tg.exitFullscreen(); else tg.requestFullscreen(); }
         else if (isFs()) document.exitFullscreen();
         else root.requestFullscreen().catch(function () {});
       } catch (e) {}
@@ -939,17 +927,6 @@ button.tile:hover { border-color: var(--accent); }
     if (tgFs) {
       tg.onEvent("fullscreenChanged", show);
       tg.onEvent("fullscreenFailed", function (e) { if (e && e.error === "UNSUPPORTED") b.hidden = true; });
-      if (pref() && !isFs()) {
-        // all'apertura: subito e di nuovo poco dopo (la finestra puo' non essere ancora pronta); se Telegram vuole un
-        // gesto, al primo tocco nella pagina (non sul pulsante, che fa da se')
-        var ask = function () { if (pref() && !isFs()) { try { tg.requestFullscreen(); } catch (e) {} } };
-        ask(); setTimeout(ask, 400);
-        var onTap = function (e) {
-          document.removeEventListener("pointerdown", onTap, true);
-          if (!b.contains(e.target)) ask();
-        };
-        document.addEventListener("pointerdown", onTap, true);
-      }
     } else {
       document.addEventListener("fullscreenchange", show);
     }
