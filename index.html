@@ -945,7 +945,29 @@ button.tile:hover { border-color: var(--accent); }
     history.replaceState({ view: state.view }, "");
     render();
     setupFullscreen();
+    loadedAt = Date.now();
   }
+
+  // ---------------------------------------------------------------- rilettura
+  // Una Mini App lasciata aperta (finestra sul PC, ridotta sul telefono) non sa che l'archivio e' cambiato: quando
+  // si torna a guardarla, se l'ultima lettura ha piu' di 30 minuti la rilegge, restando sulla schermata in corso.
+  var REFRESH_MS = 30 * 60 * 1000, loadedAt = 0, refreshing = false;
+  function refresh() {
+    if (!D || refreshing || document.visibilityState === "hidden" || Date.now() - loadedAt < REFRESH_MS) return;
+    refreshing = true;
+    load().then(function (data) {
+      if (!data || !data.summary) throw new Error("archivio senza riepilogo");
+      D = data; catColor = {};
+      prep();
+      render();
+      loadedAt = Date.now();
+    }).catch(function () {
+      loadedAt = Date.now() - REFRESH_MS + 60 * 1000;          // rete assente o GitHub occupato: si riprova tra un minuto
+    }).then(function () { refreshing = false; });
+  }
+  document.addEventListener("visibilitychange", refresh);
+  window.addEventListener("focus", refresh);
+  if (inTg) { try { tg.onEvent("activated", refresh); } catch (e) {} }   // Mini App ripresa dalla barra (Bot API 8.0)
 
   if (!window.crypto || !crypto.subtle || typeof DecompressionStream === "undefined") {
     msg("Questo browser non sa decifrare i dati: aggiorna Telegram o il browser.", true);
