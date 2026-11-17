@@ -939,7 +939,17 @@ button.tile:hover { border-color: var(--accent); }
     if (tgFs) {
       tg.onEvent("fullscreenChanged", show);
       tg.onEvent("fullscreenFailed", function (e) { if (e && e.error === "UNSUPPORTED") b.hidden = true; });
-      if (pref() && !isFs()) { try { tg.requestFullscreen(); } catch (e) {} }
+      if (pref() && !isFs()) {
+        // all'apertura: subito e di nuovo poco dopo (la finestra puo' non essere ancora pronta); se Telegram vuole un
+        // gesto, al primo tocco nella pagina (non sul pulsante, che fa da se')
+        var ask = function () { if (pref() && !isFs()) { try { tg.requestFullscreen(); } catch (e) {} } };
+        ask(); setTimeout(ask, 400);
+        var onTap = function (e) {
+          document.removeEventListener("pointerdown", onTap, true);
+          if (!b.contains(e.target)) ask();
+        };
+        document.addEventListener("pointerdown", onTap, true);
+      }
     } else {
       document.addEventListener("fullscreenchange", show);
     }
