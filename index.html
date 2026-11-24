@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>PHub</title>
+<title>Personal HUB</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox=%220 0 100 100%22 xmlns=%22http://www.w3.org/2000/svg%22 role=%22img%22 aria-label=%22Personal HUB%22%3E%3Cdefs%3E%3CradialGradient id=%22pg%22 cx=%2250%25%22 cy=%2256%25%22 r=%2260%25%22%3E%3Cstop offset=%220%22 stop-color=%22#e0262f%22 stop-opacity=%22.85%22/%3E%3Cstop offset=%22.55%22 stop-color=%22#7a1020%22 stop-opacity=%22.55%22/%3E%3Cstop offset=%221%22 stop-color=%22#121a26%22 stop-opacity=%220%22/%3E%3C/radialGradient%3E%3ClinearGradient id=%22ps%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22#f4f7fa%22/%3E%3Cstop offset=%221%22 stop-color=%22#aeb8c4%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22pd%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22#1d5a33%22/%3E%3Cstop offset=%221%22 stop-color=%22#0b2a17%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22pn%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22#3a74e0%22/%3E%3Cstop offset=%221%22 stop-color=%22#1c3f9c%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22#121a26%22/%3E%3Crect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22url%28#pg%29%22/%3E%3Cpath d=%22M50 40 L7 33 L5 47 L31 60 L50 58 Z%22 fill=%22url%28#ps%29%22 stroke=%22#5d6875%22 stroke-width=%221%22/%3E%3Cpath d=%22M50 40 L93 33 L95 47 L69 60 L50 58 Z%22 fill=%22url%28#ps%29%22 stroke=%22#5d6875%22 stroke-width=%221%22/%3E%3Cpath d=%22M11 34 L14 19 L17 34 Z M89 34 L86 19 L83 34 Z%22 fill=%22#dfe5ec%22 stroke=%22#5d6875%22 stroke-width=%22.8%22/%3E%3Cpath d=%22M35 78 L65 78 L61 95 L39 95 Z%22 fill=%22url%28#pn%29%22 stroke=%22#11265e%22 stroke-width=%221%22/%3E%3Cpath d=%22M27 50 C27 26 37 12 50 12 C63 12 73 26 73 50 Z%22 fill=%22url%28#pd%29%22 stroke=%22#06170c%22 stroke-width=%221.2%22/%3E%3Cpath d=%22M47.6 13 L52.4 13 L51.2 42 L48.8 42 Z M35.5 21 L40 16.5 L46.5 42 L44.6 43 Z M64.5 21 L60 16.5 L53.5 42 L55.4 43 Z%22 fill=%22#8be02b%22/%3E%3Cpath d=%22M26 44 L50 52 L74 44 L75 55 L50 63 L25 55 Z%22 fill=%22#d8232c%22 stroke=%22#5c0a10%22 stroke-width=%221%22/%3E%3Cpath d=%22M26.5 45.5 L50 53.5 L73.5 45.5%22 fill=%22none%22 stroke=%22#2a0306%22 stroke-width=%222.2%22 stroke-linejoin=%22round%22/%3E%3Cpath d=%22M30.5 48.5 L45 54 L43.5 57.5 L33.5 53.5 Z M69.5 48.5 L55 54 L56.5 57.5 L66.5 53.5 Z%22 fill=%22#ffd23a%22 stroke=%22#ff7a00%22 stroke-width=%221%22/%3E%3Cpath d=%22M28 56 L50 63.5 L72 56 L68.5 72 L58.5 82 L41.5 82 L31.5 72 Z%22 fill=%22url%28#ps%29%22 stroke=%22#5d6875%22 stroke-width=%221.2%22/%3E%3Cpath d=%22M38.5 71 L50 75.5 L61.5 71 M44 81.5 L44 76.8 M56 81.5 L56 76.8%22 fill=%22none%22 stroke=%22#6f7a87%22 stroke-width=%221.3%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M45.5 52.5 L54.5 52.5 L55.5 61.5 L44.5 61.5 Z%22 fill=%22url%28#pn%29%22 stroke=%22#bcd3ff%22 stroke-width=%22.9%22/%3E%3C/svg%3E">
 <!--
   PHub - Mini App di Telegram (Fase 2, 16/11/2026). Pagina statica per GitHub Pages (repository phub-app).
   Nessun dato qui: l'archivio cifrato sta in un gist segreto e si decifra nel browser.
@@ -169,6 +170,15 @@ button.tile:hover { border-color: var(--accent); }
 .i { width: 16px; height: 16px; flex: none; display: inline-block; vertical-align: -3px; }
 nav.tabs button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 nav.tabs .i { width: 15px; height: 15px; opacity: .85; }
+/* telefono: tutte le sezioni visibili, a griglia (icona sopra, nome sotto), senza scorrere di lato */
+@media (max-width: 899px) {
+  nav.tabs { position: static; display: grid; grid-template-columns: repeat(auto-fill, minmax(98px, 1fr)); gap: 6px; overflow: visible; }
+  nav.tabs button { flex-direction: column; gap: 3px; padding: 7px 4px 6px; font-size: 12.5px; line-height: 1.2;
+    border-color: var(--line); background: transparent; min-width: 0; }
+  nav.tabs button span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  nav.tabs .i { width: 18px; height: 18px; }
+  nav.tabs button[aria-selected="true"] { border-color: var(--accent); color: var(--accent); background: var(--surface); }
+}
 .cic { --k: var(--c8); width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; flex: none;
   color: var(--k); background: var(--track); background: color-mix(in srgb, var(--k) 15%, transparent); }
 .cic .i { width: 18px; height: 18px; }
@@ -264,10 +274,15 @@ details.rules > summary .chev { margin-left: auto; transition: transform .15s; }
 details.rules[open] > summary .chev { transform: rotate(90deg); }
 details.rules ul { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; line-height: 1.5; }
 
+h1#title { display: flex; align-items: center; gap: 10px; }
+h1#title .logo { width: 34px; height: 34px; flex: none; display: block; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .25)); }
+h1#title .logo svg { width: 100%; height: 100%; display: block; }
+
 /* ---------------------------------------------------------------- schermi larghi: tablet, PC, schermo intero */
 @media (min-width: 900px) {
   .app { max-width: 1280px; gap: 14px; }
   h1 { font-size: 22px; }
+  h1#title .logo { width: 40px; height: 40px; }
   nav.tabs { display: flex; gap: 6px; padding-top: 6px; }
   nav.tabs button { flex: 0 0 auto; padding: 8px 18px; font-size: 14.5px; }
   .home { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; }
@@ -299,7 +314,7 @@ details.rules ul { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; line-
 <body>
 <div class="app">
   <header>
-    <div class="hleft"><button type="button" class="back crumb" id="crumb" hidden>Tutti i servizi</button><h1 id="title">PHub</h1></div>
+    <div class="hleft"><button type="button" class="back crumb" id="crumb" hidden>Tutti i servizi</button><h1 id="title">Personal HUB</h1></div>
     <span class="hright"><span class="sub" id="sub"></span><button type="button" class="chip icon" id="fs" hidden></button></span>
   </header>
   <div class="msg" id="msg">Carico i dati…</div>
@@ -473,7 +488,8 @@ details.rules ul { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; line-
     $("crumb").hidden = hub;
     if (!hub) $("crumb").innerHTML = ico("grid") + "<span>Tutti i servizi</span>";
     $("foot").hidden = hub;
-    $("title").textContent = hub ? "PHub" : sv.name;
+    if (hub) $("title").innerHTML = '<span class="logo">' + logoSvg("h") + "</span><span>Personal HUB</span>";
+    else $("title").textContent = sv.name;
     $("sub").textContent = (DEMO ? "DATI DI PROVA" + (hub ? "" : " · ") : "") + (hub ? "" : sv.sub());
     $("foot").textContent = hub ? "" : sv.foot();
     backButton(!hub);
@@ -551,11 +567,16 @@ details.rules ul { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; line-
     SERVICES.forEach(function (sv) {
       h += '<button type="button" class="card tile" data-goto="' + sv.view + '"><span class="top"><span class="ic">' + ICONS[sv.id] + '</span><span class="nm">' + esc(sv.name) + "</span></span>" + sv.tile() + "</button>";
     });
-    h += '<div class="card tile soon"><span class="top"><span class="ic">' + ICONS.soon + '</span><span class="nm">Altri servizi</span></span><div>In arrivo: quando ne aggiungiamo uno al PHub compare qui e sulla tastiera del bot.</div></div>';
+    h += '<div class="card tile soon"><span class="top"><span class="ic">' + ICONS.soon + '</span><span class="nm">Altri servizi</span></span><div>In arrivo: quando ne aggiungiamo uno al Personal HUB compare qui e sulla tastiera del bot.</div></div>';
     return h + "</div>";
   }
 
   // ---------------------------------------------------------------- icone (tratto, colore dal testo)
+  // logo del Personal HUB (assets/branding/phub_icon.svg): testa di robot come l'avatar del bot
+  var LOGO_SVG = "<svg viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"Personal HUB\"><defs><radialGradient id=\"pg\" cx=\"50%\" cy=\"56%\" r=\"60%\"><stop offset=\"0\" stop-color=\"#e0262f\" stop-opacity=\".85\"/><stop offset=\".55\" stop-color=\"#7a1020\" stop-opacity=\".55\"/><stop offset=\"1\" stop-color=\"#121a26\" stop-opacity=\"0\"/></radialGradient><linearGradient id=\"ps\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#f4f7fa\"/><stop offset=\"1\" stop-color=\"#aeb8c4\"/></linearGradient><linearGradient id=\"pd\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1d5a33\"/><stop offset=\"1\" stop-color=\"#0b2a17\"/></linearGradient><linearGradient id=\"pn\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#3a74e0\"/><stop offset=\"1\" stop-color=\"#1c3f9c\"/></linearGradient></defs><rect width=\"100\" height=\"100\" rx=\"22\" fill=\"#121a26\"/><rect width=\"100\" height=\"100\" rx=\"22\" fill=\"url(#pg)\"/><path d=\"M50 40 L7 33 L5 47 L31 60 L50 58 Z\" fill=\"url(#ps)\" stroke=\"#5d6875\" stroke-width=\"1\"/><path d=\"M50 40 L93 33 L95 47 L69 60 L50 58 Z\" fill=\"url(#ps)\" stroke=\"#5d6875\" stroke-width=\"1\"/><path d=\"M11 34 L14 19 L17 34 Z M89 34 L86 19 L83 34 Z\" fill=\"#dfe5ec\" stroke=\"#5d6875\" stroke-width=\".8\"/><path d=\"M35 78 L65 78 L61 95 L39 95 Z\" fill=\"url(#pn)\" stroke=\"#11265e\" stroke-width=\"1\"/><path d=\"M27 50 C27 26 37 12 50 12 C63 12 73 26 73 50 Z\" fill=\"url(#pd)\" stroke=\"#06170c\" stroke-width=\"1.2\"/><path d=\"M47.6 13 L52.4 13 L51.2 42 L48.8 42 Z M35.5 21 L40 16.5 L46.5 42 L44.6 43 Z M64.5 21 L60 16.5 L53.5 42 L55.4 43 Z\" fill=\"#8be02b\"/><path d=\"M26 44 L50 52 L74 44 L75 55 L50 63 L25 55 Z\" fill=\"#d8232c\" stroke=\"#5c0a10\" stroke-width=\"1\"/><path d=\"M26.5 45.5 L50 53.5 L73.5 45.5\" fill=\"none\" stroke=\"#2a0306\" stroke-width=\"2.2\" stroke-linejoin=\"round\"/><path d=\"M30.5 48.5 L45 54 L43.5 57.5 L33.5 53.5 Z M69.5 48.5 L55 54 L56.5 57.5 L66.5 53.5 Z\" fill=\"#ffd23a\" stroke=\"#ff7a00\" stroke-width=\"1\"/><path d=\"M28 56 L50 63.5 L72 56 L68.5 72 L58.5 82 L41.5 82 L31.5 72 Z\" fill=\"url(#ps)\" stroke=\"#5d6875\" stroke-width=\"1.2\"/><path d=\"M38.5 71 L50 75.5 L61.5 71 M44 81.5 L44 76.8 M56 81.5 L56 76.8\" fill=\"none\" stroke=\"#6f7a87\" stroke-width=\"1.3\" stroke-linecap=\"round\"/><path d=\"M45.5 52.5 L54.5 52.5 L55.5 61.5 L44.5 61.5 Z\" fill=\"url(#pn)\" stroke=\"#bcd3ff\" stroke-width=\".9\"/></svg>";
+  function logoSvg(sfx) {                            // id dei gradienti resi unici: piu' loghi nella stessa pagina
+    return LOGO_SVG.replace(/id="p([gsdn])"/g, 'id="lg' + sfx + '$1"').replace(/url\(#p([gsdn])\)/g, "url(#lg" + sfx + "$1)");
+  }
   var IC = {
     arrowl: '<path d="M19 12H5M11 6l-6 6 6 6"/>',
     grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
@@ -1000,7 +1021,7 @@ details.rules ul { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; line-
   }
   function kHist() {
     return '<div class="card"><h2>Valore del conto Kraken</h2><div class="tip" id="ktip"></div><svg class="chart" id="kchart" height="230"></svg></div>' +
-      '<div class="sub">Lo storico parte dal primo aggiornamento del PHub: Kraken non fornisce i valori passati del conto.</div>';
+      '<div class="sub">Lo storico parte dal primo aggiornamento del Personal HUB: Kraken non fornisce i valori passati del conto.</div>';
   }
   function drawSeries(svgId, tipId, s) {
     var svg = $(svgId), tip = $(tipId);
