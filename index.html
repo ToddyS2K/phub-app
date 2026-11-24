@@ -113,7 +113,11 @@ nav.tabs button[aria-selected="true"] { background: var(--surface); color: var(-
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .desc { margin: 10px 0 0; font-size: 14px; line-height: 1.5; max-width: 70ch; }
 
-.back { display: inline-flex; align-items: center; gap: 4px; color: var(--accent); font-size: 14px; padding: 4px 0; }
+.back { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; width: max-content; color: var(--fg); font-size: 13.5px; font-weight: 500;
+  padding: 6px 13px 6px 9px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); transition: border-color .15s; }
+.back .i { color: var(--accent); width: 16px; height: 16px; vertical-align: 0; }
+.back:hover { border-color: var(--accent); }
+.back:active { transform: scale(.98); }
 .dhead h1 { font-size: 22px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 .chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 3px 10px; font-size: 12.5px; color: var(--muted); }
@@ -143,7 +147,7 @@ button.chip[aria-pressed="true"] { border-color: var(--accent); color: var(--acc
 #view { display: flex; flex-direction: column; gap: 12px; }
 footer { font-size: 12px; color: var(--muted); text-align: center; padding-top: 4px; }
 .hleft { display: flex; flex-direction: column; gap: 0; }
-.crumb { font-size: 13px; padding: 0 0 2px; }
+.crumb { font-size: 13px; padding: 5px 12px 5px 8px; margin-bottom: 8px; }
 .hub { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
 .tile { text-align: left; display: flex; flex-direction: column; gap: 6px; width: 100%; }
 button.tile:hover { border-color: var(--accent); }
@@ -295,7 +299,7 @@ details.rules ul { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; line-
 <body>
 <div class="app">
   <header>
-    <div class="hleft"><button type="button" class="back crumb" id="crumb" hidden>‹ PHub</button><h1 id="title">PHub</h1></div>
+    <div class="hleft"><button type="button" class="back crumb" id="crumb" hidden>Tutti i servizi</button><h1 id="title">PHub</h1></div>
     <span class="hright"><span class="sub" id="sub"></span><button type="button" class="chip icon" id="fs" hidden></button></span>
   </header>
   <div class="msg" id="msg">Carico i dati…</div>
@@ -414,14 +418,15 @@ details.rules ul { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; line-
   $("crumb").addEventListener("click", function () { go("hub"); });
 
   function go(view, conid, push) {
+    state.from = state.view;
     state.view = view; state.conid = conid || null;
-    if (push !== false) history.pushState({ view: view, conid: state.conid }, "");
+    if (push !== false) history.pushState({ view: view, conid: state.conid, from: state.from }, "");
     render();
     window.scrollTo(0, 0);
   }
   window.addEventListener("popstate", function (e) {
     var s = e.state || { view: "hub" };
-    state.view = s.view; state.conid = s.conid || null; if (D) render();
+    state.view = s.view; state.conid = s.conid || null; state.from = s.from || null; if (D) render();
   });
   $("tabs").addEventListener("click", function (e) {
     var b = e.target.closest("button[data-view]"); if (b) go(b.getAttribute("data-view"));
@@ -447,6 +452,12 @@ details.rules ul { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; line-
 
   function rerender() { if (D) { var ci = 0; Object.keys(catColor).forEach(function (n) { if (!(D.categories[n] || {}).color) catColor[n] = n === "Da assegnare" ? tok("--c8") : tok(COLORS[ci++ % COLORS.length]); }); render(); } }
 
+  // pulsante "Torna a <scheda>" delle pagine di dettaglio (torna dove si era, con la cronologia)
+  function backBtn() {
+    var sv = state.from ? serviceOf(state.from) : null;
+    var tab = sv && !DETAIL[state.from] ? sv.tabs.filter(function (t) { return t[0] === state.from; })[0] : null;
+    return '<button type="button" class="back" data-back>' + ico("arrowl") + "<span>" + (tab ? "Torna a " + tab[1] : "Indietro") + "</span></button>";
+  }
   function serviceOf(v) {
     if (v === "hub") return null;
     if (DETAIL[v]) return byId(DETAIL[v]);
@@ -460,6 +471,7 @@ details.rules ul { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; line-
     $("tabs").hidden = hub || !!DETAIL[v];
     if (sv) $("tabs").innerHTML = sv.tabs.map(function (t) { return '<button type="button" role="tab" data-view="' + t[0] + '" aria-selected="' + (t[0] === v) + '">' + (t[2] ? ico(t[2]) : "") + "<span>" + t[1] + "</span></button>"; }).join("");
     $("crumb").hidden = hub;
+    if (!hub) $("crumb").innerHTML = ico("grid") + "<span>Tutti i servizi</span>";
     $("foot").hidden = hub;
     $("title").textContent = hub ? "PHub" : sv.name;
     $("sub").textContent = (DEMO ? "DATI DI PROVA" + (hub ? "" : " · ") : "") + (hub ? "" : sv.sub());
@@ -545,6 +557,8 @@ details.rules ul { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; line-
 
   // ---------------------------------------------------------------- icone (tratto, colore dal testo)
   var IC = {
+    arrowl: '<path d="M19 12H5M11 6l-6 6 6 6"/>',
+    grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
     leaf: '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.4 5.1-6 2.4-.5 4.9-2 5.9-3"/>',
     cpu: '<rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/>',
     repeat: '<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>',
@@ -852,7 +866,7 @@ details.rules ul { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; line-
   function cCom(id) {
     var x = C().comunicazioni[id]; if (!x) return empty("Comunicazione non trovata.");
     var st = stateOf(Object.assign({ id: id }, x)), cat = catOf(x.categoria);
-    var h = '<button type="button" class="back" data-back>‹ Indietro</button>';
+    var h = backBtn();
     h += '<div class="card"><div class="chead">' + cic(cat[1], cat[2], "xl") + '<div><div class="t">' + esc(x.oggetto || "") + '</div><div class="metas" style="margin-top:5px">' +
       [[ico("calendar"), dmy(x.data)], [ico(cat[1]), x.categoria], [ico("users"), x.amministrazione]].filter(function (f) { return f[1]; })
         .map(function (f) { return "<span>" + f[0] + esc(f[1]) + "</span>"; }).join("") + '</div><div class="mbadges">' + stateBadge(st) +
@@ -976,7 +990,7 @@ details.rules ul { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; line-
   }
   function kAsset(a) {
     var s = K().summary, p = (s.positions || []).filter(function (x) { return x.asset === a; })[0];
-    var h = '<button type="button" class="back" data-back>‹ Indietro</button><div class="dhead"><h1>' + esc(a) + "</h1></div>";
+    var h = backBtn() + '<div class="dhead"><h1>' + esc(a) + "</h1></div>";
     if (p) h += '<div class="card"><h2>Posizione</h2><div class="grid2">' + cell("Quantità", kq(p.qty)) + cell("Peso", num(p.weight, 1) + "%") +
       cell("Prezzo medio di carico", p.unknown_cost ? "sconosciuto" : money(p.avg_price)) + cell("Prezzo di mercato", money(p.price)) +
       cell("Valore", money(p.value)) + cell("Costo", money(p.cost)) + cell("P&amp;L", '<span class="' + cls(p.pnl) + '">' + smoney(p.pnl) + "</span>") +
@@ -1078,7 +1092,7 @@ details.rules ul { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; line-
   function viewAsset(conid) {
     var i = ins(conid), a = asset(conid), p = D.posBy[conid], h = "";
     var row = (D.summary.positions || []).filter(function (r) { return r.conid === conid; })[0];
-    h += '<button type="button" class="back" data-back>‹ Indietro</button>';
+    h += backBtn();
     h += '<div class="detail"><div class="dhead"><h1>' + esc(i.symbol || "") + '</h1><div class="sub">' + esc(niceName(conid)) + "</div>";
     h += '<div class="chips">' + [a.categoria, i.isin, i.exchange, i.currency].filter(Boolean).map(function (x) { return '<span class="chip">' + esc(x) + "</span>"; }).join("") + "</div>";
     if (a.descrizione) h += '<p class="desc">' + esc(a.descrizione) + "</p>";
