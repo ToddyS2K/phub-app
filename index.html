@@ -612,7 +612,7 @@ details.rules ul { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; line-
     // prossimo acquisto
     var nx = p.prossimo || [];
     if (nx.length) {
-      var title = p.acquisto === "fisso" ? "Versamento del mese" : p.acquisto === "iniziale" ? "Primo acquisto" : "Prossimo acquisto";
+      var title = p.acquisto === "fisso" ? "Versamento del mese" : p.acquisto === "iniziale" ? (started ? "Da completare: primo acquisto" : "Primo acquisto") : "Prossimo acquisto";
       var body = nx.map(function (x) { return "<b>" + esc(x.simbolo) + "</b> " + money(x.eur, null, 0); }).join(" · ");
       if (p.acquisto === "sottopeso") {
         var e = (p.etf || []).filter(function (y) { return y.simbolo === nx[0].simbolo; })[0];
