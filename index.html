@@ -161,6 +161,105 @@ button.tile:hover { border-color: var(--accent); }
 .dcol { display: contents; }            /* telefono: i riquadri del dettaglio in un'unica colonna, ordinati con .o1-.o4 */
 .o1 { order: 1; } .o2 { order: 2; } .o3 { order: 3; } .o4 { order: 4; }
 
+/* ---------------------------------------------------------------- icone e Condominio */
+.i { width: 16px; height: 16px; flex: none; display: inline-block; vertical-align: -3px; }
+nav.tabs button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+nav.tabs .i { width: 15px; height: 15px; opacity: .85; }
+.cic { --k: var(--c8); width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; flex: none;
+  color: var(--k); background: var(--track); background: color-mix(in srgb, var(--k) 15%, transparent); }
+.cic .i { width: 18px; height: 18px; }
+.cic.xl { width: 44px; height: 44px; border-radius: 12px; } .cic.xl .i { width: 22px; height: 22px; }
+.com.wi { grid-template-columns: auto minmax(0, 1fr); gap: 3px 12px; align-items: start; }
+.com.wi.w3 { grid-template-columns: auto minmax(0, 1fr) auto; }
+.com.wi > .cic { grid-row: span 3; margin-top: 1px; }
+.com.wi .r { grid-column: 2 / -1; }
+.com .bd { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.com .bl { grid-column: 2 / -1; display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
+.com .bl:empty { display: none; }
+.shead { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; }
+.shead h2 { margin: 0; } .shead .i { color: var(--muted); width: 15px; height: 15px; }
+.shead .more { margin-left: auto; font-size: 12.5px; color: var(--accent); }
+.count { font-size: 11.5px; font-weight: 600; padding: 0 7px; border-radius: 999px; background: var(--track); color: var(--muted); font-family: var(--font-num); }
+.badge { display: inline-flex; align-items: center; gap: 4px; }
+.badge .i { width: 12px; height: 12px; vertical-align: 0; }
+.badge.ok { color: var(--up); border-color: var(--up); }
+.badge.acc { color: var(--accent); border-color: var(--accent); }
+.sect { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: 6px 2px -2px; display: flex; align-items: center; gap: 6px; }
+.stack { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.meet { display: flex; flex-direction: column; gap: 14px; }
+.mhead { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start; }
+.dtile { --k: var(--accent); width: 54px; border-radius: 10px; border: 1px solid var(--line); text-align: center; overflow: hidden; background: var(--surface); }
+.dtile .mo { background: var(--k); color: #fff; font-size: 10.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 2px 0; }
+.dtile .dd { font-size: 21px; font-weight: 600; line-height: 1.15; padding-top: 3px; font-family: var(--font-num); }
+.dtile .yy { font-size: 10.5px; color: var(--muted); padding-bottom: 4px; font-family: var(--font-num); }
+.dtile.past { --k: var(--c8); }
+.mtitle { font-weight: 600; font-size: 16px; line-height: 1.3; }
+.mtopic { font-size: 13.5px; margin-top: 2px; line-height: 1.4; }
+.mmeta { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+.mbadges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
+.where { display: flex; flex-direction: column; gap: 5px; font-size: 13.5px; padding: 9px 11px; border-radius: 9px; background: var(--bg); }
+.where div { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 8px; align-items: start; }
+.where .i { color: var(--muted); margin-top: 1px; }
+ol.odg { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 11px; }
+ol.odg li { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 10px; font-size: 14px; line-height: 1.45; }
+ol.odg .n { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 12px; font-weight: 600;
+  display: grid; place-items: center; font-family: var(--font-num); }
+ol.odg .maj { display: inline-flex; align-items: center; gap: 4px; margin-top: 5px; font-size: 11.5px; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; line-height: 1.4; }
+ol.odg .maj .i { width: 12px; height: 12px; }
+.callout { --k: var(--c3); display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; padding: 10px 12px; border-radius: 10px;
+  border-left: 3px solid var(--k); background: var(--bg); font-size: 14px; line-height: 1.45; }
+.callout > .i { color: var(--k); width: 18px; height: 18px; margin-top: 1px; }
+.callout .h { display: block; font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--k); margin-bottom: 2px; }
+.dec { --k: var(--muted); display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 2px 10px; padding: 10px 0; border-top: 1px solid var(--line); }
+.shead + .dec { border-top: 0; padding-top: 2px; }
+.dec > .i { color: var(--k); width: 18px; height: 18px; margin-top: 1px; }
+.dec .t { font-size: 14px; line-height: 1.45; }
+.dec .m { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.dec .e { text-align: right; font-size: 12.5px; color: var(--k); font-weight: 600; white-space: nowrap; }
+.dec .e .num { color: var(--fg); font-weight: 500; }
+.dec .act { grid-column: 2 / -1; font-size: 13px; margin-top: 5px; display: flex; gap: 6px; align-items: flex-start; }
+.dec .act .i { color: var(--c3); margin-top: 2px; width: 14px; height: 14px; }
+.esiti { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12.5px; margin-top: 6px; }
+.esiti span { --k: var(--muted); display: inline-flex; align-items: center; gap: 4px; color: var(--k); }
+.esiti .i { width: 14px; height: 14px; }
+details.past > summary { list-style: none; cursor: pointer; }
+details.past > summary::-webkit-details-marker { display: none; }
+details.past .mhead { grid-template-columns: auto minmax(0, 1fr) auto; }
+details.past .chev { color: var(--muted); transition: transform .15s; margin-top: 4px; }
+details.past[open] .chev { transform: rotate(90deg); }
+details.past[open] > summary { margin-bottom: 14px; }
+.doclinks { display: flex; flex-wrap: wrap; gap: 6px; }
+button.lnk { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--accent); border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px; }
+.metas { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; color: var(--muted); }
+.metas span { display: inline-flex; align-items: center; gap: 5px; }
+.metas .i { width: 14px; height: 14px; vertical-align: 0; }
+.chead { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: start; }
+.chead .t { font-weight: 600; font-size: 15.5px; line-height: 1.3; }
+.facts dt .i { width: 14px; height: 14px; }
+a.btn .i { width: 16px; height: 16px; vertical-align: 0; }
+.ysum { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 2px 2px 4px; }
+.ysum .y { font-weight: 600; font-size: 16px; font-family: var(--font-num); }
+.ysum .s { font-size: 12.5px; color: var(--muted); }
+
+.pac-row { padding: 9px 0; border-top: 1px solid var(--line); }
+.shead + .pac-row { border-top: 0; padding-top: 2px; }
+.pac-top, .pac-bot { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.pac-top b { font-weight: 600; }
+.pac-bot { font-size: 12.5px; color: var(--muted); margin-top: 4px; flex-wrap: wrap; }
+.pbar { position: relative; height: 6px; border-radius: 3px; background: var(--track); margin-top: 7px; }
+.pbar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: var(--k, var(--accent)); }
+.pbar b { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; background: var(--fg); border-radius: 1px; }
+.phases { display: flex; flex-direction: column; gap: 6px; }
+.phase { padding: 8px 10px; border-radius: 9px; border: 1px solid var(--line); }
+.phase.on { border-color: var(--k, var(--accent)); background: var(--bg); }
+.phase .pn { font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+.phase .pc { font-size: 13px; margin-top: 2px; }
+details.rules > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; color: var(--muted); }
+details.rules > summary::-webkit-details-marker { display: none; }
+details.rules > summary .chev { margin-left: auto; transition: transform .15s; }
+details.rules[open] > summary .chev { transform: rotate(90deg); }
+details.rules ul { margin: 8px 0 6px; padding-left: 20px; font-size: 14px; line-height: 1.5; }
+
 /* ---------------------------------------------------------------- schermi larghi: tablet, PC, schermo intero */
 @media (min-width: 900px) {
   .app { max-width: 1280px; gap: 14px; }
@@ -184,6 +283,8 @@ button.tile:hover { border-color: var(--accent); }
   .tr { grid-template-columns: 6.2em 3.6em minmax(0, 1.4fr) minmax(0, 1fr) 9em; padding: 7px 0; }
   .tr .x { grid-column: auto; text-align: right; order: 4; }
   .tr .tot { order: 5; }
+  .cgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 14px; }
+  .ctwo { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start; gap: 14px; }
 }
 @media (min-width: 1400px) {
   .groups { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -357,7 +458,7 @@ button.tile:hover { border-color: var(--accent); }
     var v = state.view, hub = v === "hub", sv = serviceOf(v);
     if (!hub && !sv) { state.view = v = "hub"; hub = true; }
     $("tabs").hidden = hub || !!DETAIL[v];
-    if (sv) $("tabs").innerHTML = sv.tabs.map(function (t) { return '<button type="button" role="tab" data-view="' + t[0] + '" aria-selected="' + (t[0] === v) + '">' + t[1] + "</button>"; }).join("");
+    if (sv) $("tabs").innerHTML = sv.tabs.map(function (t) { return '<button type="button" role="tab" data-view="' + t[0] + '" aria-selected="' + (t[0] === v) + '">' + (t[2] ? ico(t[2]) : "") + "<span>" + t[1] + "</span></button>"; }).join("");
     $("crumb").hidden = hub;
     $("foot").hidden = hub;
     $("title").textContent = hub ? "PHub" : sv.name;
@@ -371,7 +472,7 @@ button.tile:hover { border-color: var(--accent); }
   }
   var VIEWS = {
     home: function () { return viewHome(); }, assets: function () { return viewAssets(); },
-    trades: function () { return viewTrades(); }, history: function () { return viewHistory(); },
+    trades: function () { return viewTrades(); }, history: function () { return viewHistory(); }, pac: function () { return viewPac(); },
     asset: function () { return viewAsset(state.conid); },
     "c-todo": function () { return cTodo(); }, "c-coms": function () { return cComs(); }, "c-cases": function () { return cCases(); },
     "c-spese": function () { return cSpese(); }, "c-meet": function () { return cMeet(); }, "c-norme": function () { return cNorme(); },
@@ -395,7 +496,7 @@ button.tile:hover { border-color: var(--accent); }
   };
   var SERVICES = [
     { id: "portfolio", name: "Portafoglio", view: "home",
-      tabs: [["home", "Panoramica"], ["assets", "Titoli"], ["trades", "Operazioni"], ["history", "Storico"]],
+      tabs: [["home", "Panoramica", "chart"], ["assets", "Titoli", "list"], ["pac", "PAC", "repeat"], ["trades", "Operazioni", "swap"], ["history", "Storico", "history"]],
       sub: function () { return "dati al " + dmy(D.summary.date); },
       foot: function () { return "Fonte: Interactive Brokers (report Flex) · aggiornato il " + updated((D.meta || {}).updated_portfolio || (D.meta || {}).updated); },
       tile: function () {
@@ -406,7 +507,8 @@ button.tile:hover { border-color: var(--accent); }
           '<div class="sub">Interactive Brokers · dati al ' + dmy(s.date) + "</div>";
       } },
     { id: "condominio", name: "Condominio", view: "c-todo",
-      tabs: [["c-todo", "Da fare"], ["c-coms", "Comunicazioni"], ["c-cases", "Pratiche"], ["c-spese", "Spese"], ["c-meet", "Assemblee"], ["c-norme", "Norme"]],
+      tabs: [["c-todo", "In evidenza", "star"], ["c-meet", "Assemblee", "users"], ["c-coms", "Comunicazioni", "mail"], ["c-cases", "Pratiche", "folder"],
+             ["c-spese", "Quote e spese", "euro"], ["c-norme", "Regolamento", "book"]],
       sub: function () { return "Coto Real" + (C().meta.last_delivery ? " · aggiornato il " + dmy(C().meta.last_delivery) : ""); },
       foot: function () { return "Fonte: email dell'amministrazione (etichetta Coto Real), riassunte dalla routine Claude. Originali e allegati restano in Gmail."; },
       tile: function () {
@@ -419,7 +521,7 @@ button.tile:hover { border-color: var(--accent); }
           '<div class="sub">Coto Real · ' + (s.last_delivery ? "aggiornato il " + dmy(s.last_delivery) : "") + "</div>";
       } },
     { id: "crypto", name: "Crypto", view: "k-home",
-      tabs: [["k-home", "Panoramica"], ["k-moves", "Movimenti"], ["k-hist", "Storico"]],
+      tabs: [["k-home", "Panoramica", "chart"], ["k-moves", "Movimenti", "swap"], ["k-hist", "Storico", "history"]],
       sub: function () { var s = K().summary; return s ? "dati al " + dmy(s.date) : ""; },
       foot: function () { return "Fonte: Kraken (API in sola lettura). Prezzo medio di carico calcolato dai movimenti, in euro." +
         ((K().meta || {}).updated ? " Aggiornato il " + updated(K().meta.updated) + "." : ""); },
@@ -441,6 +543,113 @@ button.tile:hover { border-color: var(--accent); }
     return h + "</div>";
   }
 
+  // ---------------------------------------------------------------- icone (tratto, colore dal testo)
+  var IC = {
+    leaf: '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.4 5.1-6 2.4-.5 4.9-2 5.9-3"/>',
+    cpu: '<rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/>',
+    repeat: '<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>',
+    target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+    calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    pin: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+    list: '<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>',
+    check: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/>',
+    x: '<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>',
+    pause: '<circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/>',
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+    euro: '<path d="M17 6.5A7 7 0 1 0 17 17.5"/><path d="M4 10h9M4 14h9"/>',
+    alert: '<path d="M12 3.5l9 16H3z"/><path d="M12 10v4M12 17h.01"/>',
+    mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+    doc: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+    tool: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/>',
+    book: '<path d="M4 19V5a2 2 0 0 1 2-2h14v14H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h14"/>',
+    bank: '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 21h18"/>',
+    megaphone: '<path d="M3 10v4h4l8 4V6l-8 4z"/><path d="M19 9a4 4 0 0 1 0 6"/>',
+    folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+    chart: '<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>',
+    users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/>',
+    hourglass: '<path d="M6 3h12M6 21h12M7 3v3l5 6-5 6v3M17 3v3l-5 6 5 6v3"/>',
+    arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+    inbox: '<path d="M3 13l3-8h12l3 8v6H3z"/><path d="M3 13h5l1 3h6l1-3h5"/>',
+    task: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12l2.5 2.5L16 9.5"/>',
+    star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+    chev: '<path d="M9 6l6 6-6 6"/>',
+    clip: '<path d="M21 11.5l-8.6 8.6a5 5 0 0 1-7.1-7.1l8.6-8.6a3.5 3.5 0 0 1 5 5l-8.6 8.6a2 2 0 0 1-2.8-2.8L15 7.6"/>',
+    vote: '<path d="M4 20h16M6 20V9l6-5 6 5v11"/><path d="M9.5 13l2 2 3.5-3.5"/>',
+    swap: '<path d="M7 4L3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/>',
+    history: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>'
+  };
+  function ico(n, cls) {
+    return '<svg class="i' + (cls ? " " + cls : "") + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (IC[n] || "") + "</svg>";
+  }
+
+  // ---------------------------------------------------------------- PAC (sezione "pac" dell'archivio, da config/pac.toml)
+  var PAC_COLORS = ["--c2", "--c6", "--c1", "--c4"];
+  function monthYear(ym) { return ym ? MONTHS_L[+ym.slice(5, 7) - 1] + " " + ym.slice(0, 4) : ""; }
+  function viewPac() {
+    var ps = D.pac || [];
+    if (!ps.length) return empty("Nessun piano di accumulo configurato: i PAC si descrivono in config/pac.toml.");
+    return '<div class="stack cgrid">' + ps.map(pacCard).join("") + "</div>";
+  }
+  function pacCard(p, idx) {
+    var col = PAC_COLORS[idx % PAC_COLORS.length], started = p.value > 0;
+    var h = '<div class="card meet" style="--k:var(' + col + ')">';
+    // intestazione
+    var badges = ['<span class="badge acc">' + ico("repeat") + money(p.mensile, null, 0) + " al mese</span>"];
+    if (p.iniziale) badges.push('<span class="badge">' + ico("euro") + money(p.iniziale, null, 0) + " iniziali</span>");
+    if (p.inizio) badges.push('<span class="badge">' + ico("calendar") + "da " + monthYear(p.inizio) + "</span>");
+    if (p.buys) badges.push('<span class="badge">' + ico("swap") + p.buys + (p.buys === 1 ? " acquisto" : " acquisti") + "</span>");
+    if (p.anno && p.orizzonte) badges.push('<span class="badge">' + ico("hourglass") + "anno " + p.anno + " di " + p.orizzonte + "</span>");
+    h += '<div class="chead">' + cic(p.icona, col, "xl") + '<div><div class="t" style="font-size:17px">' + esc(p.nome) + "</div>" +
+      (p.descrizione ? '<div class="mtopic" style="color:var(--muted)">' + esc(p.descrizione) + "</div>" : "") +
+      '<div class="mbadges">' + badges.join("") + "</div></div><span></span></div>";
+    // numeri
+    if (started) h += '<div class="grid2">' + cell("Valore", money(p.value)) + cell("Investito", money(p.cost)) +
+      cell("P&amp;L", '<span class="' + cls(p.pnl) + '">' + smoney(p.pnl) + (p.pnl_pct != null ? " (" + pct(p.pnl_pct) + ")" : "") + "</span>") +
+      cell("Ultimo acquisto", p.last_buy ? dmy(p.last_buy) : "–") + "</div>";
+    else h += '<div class="callout" style="--k:var(--accent)">' + ico("info") + '<div><span class="h">Piano da avviare</span>' +
+      "Nessun acquisto ancora nei dati di Interactive Brokers. Gli acquisti compaiono qui il giorno dopo l'esecuzione.</div></div>";
+    // prossimo acquisto
+    var nx = p.prossimo || [];
+    if (nx.length) {
+      var title = p.acquisto === "fisso" ? "Versamento del mese" : p.acquisto === "iniziale" ? "Primo acquisto" : "Prossimo acquisto";
+      var body = nx.map(function (x) { return "<b>" + esc(x.simbolo) + "</b> " + money(x.eur, null, 0); }).join(" · ");
+      if (p.acquisto === "sottopeso") {
+        var e = (p.etf || []).filter(function (y) { return y.simbolo === nx[0].simbolo; })[0];
+        if (e) body += '<div class="sub" style="margin-top:2px">È il più sotto peso: ' + num(e.weight, 1) + "% contro l'obiettivo del " + num(e.peso, 0) + "%.</div>";
+      }
+      h += '<div class="callout" style="--k:var(' + col + ')">' + ico("arrow") + '<div><span class="h">' + title + "</span>" + body + "</div></div>";
+    }
+    // allocazione
+    h += "<div>" + head("target", "Allocazione", (p.etf || []).length) + (p.etf || []).map(function (x) {
+      var dev = x.deviation, big = dev != null && Math.abs(dev) >= 5;
+      return '<div class="pac-row"><div class="pac-top"><span><b>' + esc(x.simbolo) + '</b> <span class="sub">' + esc(x.ruolo) + "</span></span>" +
+        '<span class="num">' + (x.held ? money(x.value) : '<span class="sub">da acquistare</span>') + "</span></div>" +
+        '<div class="pbar"><i style="width:' + Math.min(100, x.weight || 0) + '%"></i><b style="left:' + Math.min(100, x.peso) + '%" title="obiettivo"></b></div>' +
+        '<div class="pac-bot"><span>' + (x.held ? num(x.weight, 1) + "% · " : "") + "obiettivo " + num(x.peso, 0) + "%" +
+        (dev != null ? ' <span class="' + (big ? "badge soon" : "sub") + '">' + (dev > 0 ? "+" : dev < 0 ? "−" : "") + num(Math.abs(dev), 1) + " pt</span>" : "") + "</span>" +
+        "<span>" + (x.mensile ? money(x.mensile, null, 0) + "/mese" : "") +
+        (x.held && x.pnl_pct != null ? ' · <span class="' + cls(x.pnl) + '">' + pct(x.pnl_pct) + "</span>" : "") + "</span></div></div>";
+    }).join("") + "</div>";
+    // fasi
+    if ((p.fasi || []).length) h += "<div>" + head("history", "Fasi del piano") + '<div class="phases">' + p.fasi.map(function (f) {
+      var on = p.fase && p.fase.nome === f.nome;
+      return '<div class="phase' + (on ? " on" : "") + '"><div class="pn">' + esc(f.nome) + (on ? ' <span class="badge acc">attuale</span>' : "") + "</div>" +
+        '<div class="sub">Anni ' + f.da + "–" + f.a + " · " + esc(f.allocazione || "") + "</div>" + (f.cosa ? '<div class="pc">' + esc(f.cosa) + "</div>" : "") + "</div>";
+    }).join("") + "</div></div>";
+    // satelliti
+    if ((p.satelliti || []).length) h += "<div>" + head("star", "Fuori dal piano") + p.satelliti.map(function (s) {
+      return '<div class="pac-row"><div class="pac-top"><span><b>' + esc(s.simbolo) + '</b> <span class="sub">' + esc(s.ruolo) + "</span></span>" +
+        '<span class="num">' + (s.held ? money(s.value) + (s.pnl_pct != null ? ' <span class="' + cls(s.pnl) + '">' + pct(s.pnl_pct) + "</span>" : "") : "") + "</span></div>" +
+        (s.regola ? '<div class="sub" style="margin-top:3px">' + esc(s.regola) + "</div>" : "") + "</div>";
+    }).join("") + "</div>";
+    // regole
+    if ((p.regole || []).length) h += '<details class="rules"><summary>' + ico("book") + "Regole del piano (" + p.regole.length + ")" + ico("chev", "chev") + "</summary><ul>" +
+      p.regole.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") + "</ul>" +
+      (p.ribilanciamento ? '<div class="sub">Ribilanciamento: ' + esc(p.ribilanciamento) + "</div>" : "") + "</details>";
+    return h + "</div>";
+  }
+
   // ---------------------------------------------------------------- Condominio (sezione "condominio" dell'archivio)
   function C() {
     var c = D.condominio || {};
@@ -452,40 +661,187 @@ button.tile:hover { border-color: var(--accent); }
   function byDate(field) { return function (a, b) { return (b[field] || "").localeCompare(a[field] || ""); }; }
   function stateOf(x) { var s = C().summary; return (s && s.states && s.states[x.id]) || x.stato || "Da leggere"; }
   function daysTo(d) { return d ? Math.round((Date.parse(d.slice(0, 10)) - Date.parse(new Date().toISOString().slice(0, 10))) / 864e5) : null; }
+  function longDate(d) {
+    if (!d) return "";
+    var x = new Date(d.slice(0, 10) + "T12:00:00");
+    return isNaN(x) ? dmy(d) : x.toLocaleDateString("it-IT", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  }
+  function cap(s) { s = String(s || "").trim(); return s ? s.charAt(0).toUpperCase() + s.slice(1) : ""; }
   function dueBadge(d) {
     var n = daysTo(d); if (n == null) return "";
     var cl = n < 0 ? "late" : n <= 7 ? "soon" : "";
-    var tx = n < 0 ? "scaduta " + dmy(d) : n === 0 ? "oggi" : n === 1 ? "domani" : "entro " + dmy(d);
-    return '<span class="badge ' + cl + '">' + tx + "</span>";
+    var tx = n < 0 ? "scaduta il " + dmy(d) : n === 0 ? "scade oggi" : n === 1 ? "scade domani" : "entro il " + dmy(d);
+    return '<span class="badge ' + cl + '">' + ico(n < 0 ? "alert" : "clock") + tx + "</span>";
   }
-  function comRow(x) {
-    var st = stateOf(x);
-    return '<button type="button" class="com" data-com="' + esc(x.id) + '"><span><div class="t">' + esc(x.oggetto || "(senza oggetto)") + '</div><div class="m">' +
-      dmy(x.data) + (x.categoria ? " · " + esc(x.categoria) : "") + (x.amministrazione ? " · " + esc(x.amministrazione) : "") + "</div></span>" +
-      '<span style="text-align:right">' + (st === "Da fare" ? '<span class="badge todo">da fare</span> ' : st === "Da leggere" ? '<span class="badge">da leggere</span> ' : "") +
-      (st !== "Archiviata" && x.scadenza ? dueBadge(x.scadenza) : "") + "</span>" +
-      (x.riassunto ? '<span class="r">' + esc(x.riassunto) + "</span>" : "") + "</button>";
+  function head(icon, title, n, more) {
+    return '<div class="shead">' + ico(icon) + "<h2>" + title + "</h2>" + (n != null ? '<span class="count">' + n + "</span>" : "") +
+      (more ? '<button type="button" class="more" data-goto="' + more[0] + '">' + more[1] + "</button>" : "") + "</div>";
   }
   function empty(t) { return '<div class="msg">' + t + "</div>"; }
+
+  // categoria della comunicazione -> icona e colore
+  var CATS = [["convoc", "calendar", "--c1"], ["acta", "doc", "--c4"], ["derrama", "euro", "--c3"], ["quota", "euro", "--c2"],
+    ["bilancio", "chart", "--c7"], ["lavori", "tool", "--c3"], ["moros", "alert", "--c6"], ["regolam", "book", "--c4"],
+    ["circolare", "megaphone", "--c1"], ["incidente", "bank", "--c6"], ["pratica", "folder", "--c5"]];
+  function catOf(c) {
+    var k = String(c || "").toLowerCase();
+    for (var i = 0; i < CATS.length; i++) if (k.indexOf(CATS[i][0]) >= 0) return CATS[i];
+    return ["", "mail", "--c8"];
+  }
+  function cic(icon, color, cls) { return '<span class="cic' + (cls ? " " + cls : "") + '" style="--k:var(' + color + ')">' + ico(icon) + "</span>"; }
+  function stateBadge(st) {
+    return st === "Da fare" ? '<span class="badge todo">' + ico("task") + "da fare</span>" :
+      st === "Da leggere" ? '<span class="badge acc">' + ico("inbox") + "da leggere</span>" :
+      st === "Archiviata" ? '<span class="badge">' + ico("check") + "archiviata</span>" : "";
+  }
+  function comRow(x) {
+    var st = stateOf(x), cat = catOf(x.categoria);
+    return '<button type="button" class="com wi" data-com="' + esc(x.id) + '">' + cic(cat[1], cat[2]) +
+      '<span><div class="t">' + esc(x.oggetto || "(senza oggetto)") + '</div><div class="m">' +
+      [dmy(x.data), x.categoria, x.amministrazione].filter(Boolean).map(esc).join(" · ") + "</div></span>" +
+      '<span class="bl">' + stateBadge(st) + (st !== "Archiviata" && x.scadenza ? dueBadge(x.scadenza) : "") + "</span>" +
+      (x.riassunto ? '<span class="r">' + esc(x.riassunto) + "</span>" : "") + "</button>";
+  }
+
+  // ---- assemblee
+  var TIPI = { "junta general extraordinaria": "Assemblea straordinaria", "junta general ordinaria": "Assemblea ordinaria" };
+  var ESITI = { "Approvata": ["check", "--up", "approvata", "approvate"], "Respinta": ["x", "--down", "respinta", "respinte"],
+    "Rinviata": ["pause", "--c5", "rinviata", "rinviate"], "Informativa": ["info", "--c8", "informativa", "informative"] };
+  function meetTitle(r) {
+    var tipo = TIPI[String(r.tipo || "").toLowerCase()];
+    var m = /\(([^()]+)\)\s*$/.exec(r.riunione || "");
+    return tipo ? { t: tipo, topic: m ? cap(m[1]) : "" } : { t: r.riunione || r.tipo || "Riunione", topic: "" };
+  }
+  function meetState(r) {
+    var n = daysTo(r.data);
+    if (/acta|verbale/i.test(r.stato || "")) return '<span class="badge ok">' + ico("doc") + "verbale ricevuto</span>";
+    if (n != null && n >= 0) return '<span class="badge acc">' + ico("calendar") + "convocata · " + (n === 0 ? "oggi" : n === 1 ? "domani" : "tra " + n + " giorni") + "</span>";
+    return '<span class="badge soon">' + ico("hourglass") + "in attesa del verbale</span>";
+  }
+  function dateTile(d, past) {
+    if (!d) return '<div class="dtile' + (past ? " past" : "") + '"><div class="mo">—</div><div class="dd">–</div><div class="yy"></div></div>';
+    return '<div class="dtile' + (past ? " past" : "") + '"><div class="mo">' + MONTHS_L[+d.slice(5, 7) - 1].slice(0, 3) + '</div><div class="dd">' +
+      d.slice(8, 10) + '</div><div class="yy">' + d.slice(0, 4) + "</div></div>";
+  }
+  // "Ore 15:00 (1a conv.) / 15:30 (2a conv.), Luogo. 1) Punto (maggioranza ...). 2) ..." -> orario, luogo, punti
+  function parseOdg(text) {
+    var s = String(text || "").trim(), out = { when: "", where: "", intro: "", points: [] };
+    if (!s) return out;
+    function split(re) {                              // punti numerati 1, 2, 3... in ordine, altrimenti nulla
+      var ps = s.split(re);
+      if (ps.length < 3) return null;
+      for (var j = 1; j < ps.length; j += 2) if (+ps[j] !== (j + 1) / 2) return null;
+      return ps;
+    }
+    var parts = split(/(?:^|\s)(\d{1,2})\)\s+/) || split(/(?:^|\n)\s*(\d{1,2})[.)]\s+/), i;
+    if (!parts) { out.intro = s; return out; }
+    for (i = 1; i < parts.length; i += 2) {
+      var p = parts[i + 1].trim().replace(/\.\s*$/, ""), maj = "";
+      var m = /\s*\(((?:maggioranz|quorum|unanimit)[^()]*)\)\s*$/i.exec(p);
+      if (m) { maj = cap(m[1]); p = p.slice(0, m.index).trim(); }
+      out.points.push({ text: p, maj: maj });
+    }
+    var pre = parts[0].trim().replace(/\.\s*$/, "");
+    if (pre) {
+      var segs = pre.split(/,\s+/), when = [];
+      while (segs.length && /\d{1,2}[:.]\d{2}/.test(segs[0])) when.push(segs.shift());
+      if (when.length) { out.when = when.join(", ").replace(/\s*\/\s*/g, " · "); out.where = segs.join(", "); }
+      else out.intro = pre;
+    }
+    return out;
+  }
+  function decRow(d) {
+    var e = ESITI[d.esito] || ["info", "--c8", String(d.esito || "").toLowerCase()];
+    return '<div class="dec" style="--k:var(' + e[1] + ')">' + ico(e[0]) +
+      '<div><div class="t">' + esc(d.decisione || "") + '</div><div class="m">' +
+      [d.punto ? "Punto " + d.punto : null, d.argomento, d.votazione, d.rate].filter(Boolean).map(esc).join(" · ") + "</div></div>" +
+      '<div class="e">' + esc(e[2] || "") + (d.importo != null ? '<div class="num">' + money(d.importo) + "</div>" : "") + "</div>" +
+      (d.cosa_fare ? '<div class="act">' + ico("arrow") + "<span>" + esc(d.cosa_fare) + "</span></div>" : "") + "</div>";
+  }
+  function esitiSummary(ds) {
+    var n = {}; ds.forEach(function (d) { n[d.esito] = (n[d.esito] || 0) + 1; });
+    return ["Approvata", "Respinta", "Rinviata", "Informativa"].filter(function (k) { return n[k]; }).map(function (k) {
+      var e = ESITI[k]; return '<span style="--k:var(' + e[1] + ')">' + ico(e[0]) + n[k] + " " + (n[k] === 1 ? e[2] : e[3]) + "</span>";
+    }).join("");
+  }
+  function meetDocs(r) {
+    var cs = (r.comunicazioni || []).map(function (id) { var x = C().comunicazioni[id]; return x ? Object.assign({ id: id }, x) : null; }).filter(Boolean);
+    if (!cs.length) return "";
+    return '<div class="doclinks">' + cs.map(function (x) {
+      var k = String(x.categoria || "").toLowerCase(), lbl = k.indexOf("acta") >= 0 ? "Verbale" : k.indexOf("convoc") >= 0 ? "Convocazione" : "Comunicazione";
+      return '<button type="button" class="lnk" data-com="' + esc(x.id) + '">' + ico(catOf(x.categoria)[1]) + lbl + " del " + dmy(x.data) + "</button>";
+    }).join("") + "</div>";
+  }
+  function meetBody(r, ds) {
+    var o = parseOdg(r.ordine_del_giorno), h = "";
+    if (o.when || o.where) h += '<div class="where">' + (o.when ? "<div>" + ico("clock") + "<span>" + esc(o.when) + "</span></div>" : "") +
+      (o.where ? "<div>" + ico("pin") + "<span>" + esc(o.where) + "</span></div>" : "") + "</div>";
+    if (o.points.length) h += "<div>" + head("list", "Ordine del giorno", o.points.length) + '<ol class="odg">' + o.points.map(function (p, i) {
+      return '<li><span class="n">' + (i + 1) + "</span><span>" + esc(p.text) + (p.maj ? '<br><span class="maj">' + ico("vote") + esc(p.maj) + "</span>" : "") + "</span></li>";
+    }).join("") + "</ol></div>";
+    if (o.intro) h += "<div>" + head("info", o.points.length ? "Note" : "Dettagli") + '<div class="prose" style="font-size:14px">' + esc(o.intro) + "</div></div>";
+    if (r.da_fare) h += '<div class="callout">' + ico("task") + '<div><span class="h">Cosa devi fare</span>' + esc(r.da_fare) + "</div></div>";
+    if (ds.length) h += "<div>" + head("vote", "Decisioni", ds.length) + ds.map(decRow).join("") + "</div>";
+    else if (r.decisioni) h += "<div>" + head("vote", "Decisioni") + '<div class="prose" style="font-size:14px">' + esc(r.decisioni) + "</div></div>";
+    h += meetDocs(r);
+    return h;
+  }
+  function meetHead(r, past, extra) {
+    var mt = meetTitle(r);
+    return '<div class="mhead">' + dateTile(r.data, past) + '<div><div class="mtitle">' + esc(mt.t) + "</div>" +
+      (mt.topic ? '<div class="mtopic">' + esc(mt.topic) + "</div>" : "") +
+      '<div class="mmeta">' + esc(cap(longDate(r.data))) + (TIPI[String(r.tipo || "").toLowerCase()] ? " · " + esc(r.tipo) : "") + "</div>" +
+      (extra || "") + "</div>" + (past ? ico("chev", "chev") : "") + "</div>";
+  }
+  function decsOf(r) {
+    return list(C().decisioni).filter(function (d) { return d.riunione === r.id; }).sort(function (a, b) { return (+a.punto || 0) - (+b.punto || 0); });
+  }
+  function upcoming() {
+    return list(C().riunioni).filter(function (r) { return !/acta|verbale/i.test(r.stato || "") && daysTo(r.data) >= 0; })
+      .sort(function (a, b) { return (a.data || "").localeCompare(b.data || ""); });
+  }
+  function meetCard(r) {
+    var ds = decsOf(r);
+    return '<div class="card meet">' + meetHead(r, false, '<div class="mbadges">' + meetState(r) + "</div>") + meetBody(r, ds) + "</div>";
+  }
+  function pastCard(r) {
+    var ds = decsOf(r);
+    var extra = '<div class="mbadges">' + meetState(r) + "</div>" + (ds.length ? '<div class="esiti">' + esitiSummary(ds) + "</div>" : "");
+    return '<details class="card past"><summary>' + meetHead(r, true, extra) + '</summary><div class="meet">' + meetBody(r, ds) + "</div></details>";
+  }
+  function cMeet() {
+    var up = upcoming(), ids = {}, dec = list(C().decisioni);
+    up.forEach(function (r) { ids[r.id] = 1; });
+    var past = list(C().riunioni).filter(function (r) { return !ids[r.id]; }).sort(byDate("data"));
+    if (!up.length && !past.length && !dec.length) return empty("Nessuna assemblea in archivio.");
+    var h = "";
+    if (up.length) h += '<div class="sect">' + ico("calendar") + "Prossime</div>" + up.map(meetCard).join("");
+    if (past.length) h += '<div class="sect">' + ico("history") + "Svolte</div>" + '<div class="stack cgrid">' + past.map(pastCard).join("") + "</div>";
+    var orphan = dec.filter(function (d) { return !C().riunioni[d.riunione]; });
+    if (orphan.length) h += '<div class="card">' + head("vote", "Altre decisioni", orphan.length) + orphan.map(decRow).join("") + "</div>";
+    return '<div class="stack">' + h + "</div>";
+  }
+
+  // ---- in evidenza
   function cTodo() {
     var coms = list(C().comunicazioni), s = C().summary || {};
     var todo = coms.filter(function (x) { return stateOf(x) === "Da fare"; }).sort(function (a, b) { return (a.scadenza || "9999").localeCompare(b.scadenza || "9999"); });
     var read = coms.filter(function (x) { return stateOf(x) === "Da leggere"; }).sort(byDate("data"));
-    var meet = list(C().riunioni).filter(function (r) { return r.stato === "Convocata" && daysTo(r.data) >= 0; });
-    var h = "";
-    if (s.stale_days > 3) h += '<div class="msg err">La routine non manda dati da ' + s.stale_days + " giorni: controllala su claude.ai.</div>";
-    h += '<div class="card"><h2>Da fare (' + todo.length + ")</h2>" + (todo.length ? '<div class="list">' + todo.map(comRow).join("") + "</div>" : '<div class="sub">Niente da fare.</div>') + "</div>";
-    if (meet.length) h += '<div class="card"><h2>Assemblee convocate</h2>' + meet.map(function (r) {
-      return '<div class="com"><span><div class="t">' + esc(r.riunione || "Riunione") + '</div><div class="m">' + esc(r.tipo || "") + "</div></span><span>" + dueBadge(r.data) + "</span>" +
-        (r.ordine_del_giorno ? '<span class="prose" style="grid-column:1/-1;font-size:13.5px;margin-top:6px"><b>Ordine del giorno</b>\n' + esc(r.ordine_del_giorno) + "</span>" : "") +
-        (r.da_fare ? '<span class="r">' + esc(r.da_fare) + "</span>" : "") + "</div>"; }).join("") + "</div>";
-    h += '<div class="card"><h2>Da leggere (' + read.length + ")</h2>" + (read.length ? '<div class="list">' + read.map(comRow).join("") + "</div>" : '<div class="sub">Tutto letto.</div>') + "</div>";
-    return h;
+    var up = upcoming(), h = "";
+    if (s.stale_days > 3) h += '<div class="msg err">La routine non invia dati da ' + s.stale_days + " giorni: verificala su claude.ai.</div>";
+    if (up.length) h += '<div class="sect">' + ico("calendar") + "Prossime assemblee</div>" + up.map(meetCard).join("");
+    h += '<div class="ctwo"><div class="card">' + head("task", "Da fare", todo.length) +
+      (todo.length ? '<div class="list">' + todo.map(comRow).join("") + "</div>" : '<div class="sub">Nessuna azione richiesta.</div>') + "</div>";
+    h += '<div class="card">' + head("inbox", "Da leggere", read.length, ["c-coms", "Tutte le comunicazioni"]) +
+      (read.length ? '<div class="list">' + read.map(comRow).join("") + "</div>" : '<div class="sub">Nessuna comunicazione da leggere.</div>') + "</div></div>";
+    return '<div class="stack">' + h + "</div>";
   }
+
+  // ---- comunicazioni
   function cComs() {
     var coms = list(C().comunicazioni).sort(byDate("data"));
     if (!coms.length) return empty("Nessuna comunicazione in archivio.");
-    var h = '<div class="card"><div class="list">', month = "";
+    var h = '<div class="card">' + head("mail", "Comunicazioni", coms.length) + '<div class="list">', month = "";
     coms.forEach(function (x) {
       var m = (x.data || "").slice(0, 7);
       if (m && m !== month) { month = m; h += '<div class="month">' + MONTHS_L[+m.slice(5, 7) - 1] + " " + m.slice(0, 4) + "</div>"; }
@@ -495,71 +851,70 @@ button.tile:hover { border-color: var(--accent); }
   }
   function cCom(id) {
     var x = C().comunicazioni[id]; if (!x) return empty("Comunicazione non trovata.");
-    var st = stateOf(Object.assign({ id: id }, x));
-    var h = '<button type="button" class="back" data-back>‹ Indietro</button><div class="dhead"><h1 style="font-size:20px">' + esc(x.oggetto || "") + '</h1><div class="chips">' +
-      [dmy(x.data), x.amministrazione, x.categoria, st].filter(Boolean).map(function (t) { return '<span class="chip">' + esc(t) + "</span>"; }).join("") +
-      (x.scadenza ? " " + dueBadge(x.scadenza) : "") + "</div></div>";
-    h += '<div class="card"><h2>Riassunto</h2><div class="prose">' + esc(x.riassunto || "—") + "</div></div>";
-    var facts = [["Mittente", x.mittente], ["Allegati", x.allegati], ["Scadenza", x.scadenza ? dmy(x.scadenza) : null]];
-    h += '<div class="card"><dl class="facts">' + facts.filter(function (f) { return f[1]; }).map(function (f) { return "<dt>" + f[0] + "</dt><dd>" + esc(f[1]) + "</dd>"; }).join("") + "</dl>" +
-      (x.link ? '<div style="margin-top:12px"><a class="btn" href="' + esc(x.link) + '" target="_blank" rel="noopener" data-ext>Apri l\'email in Gmail</a></div>' : "") + "</div>";
+    var st = stateOf(Object.assign({ id: id }, x)), cat = catOf(x.categoria);
+    var h = '<button type="button" class="back" data-back>‹ Indietro</button>';
+    h += '<div class="card"><div class="chead">' + cic(cat[1], cat[2], "xl") + '<div><div class="t">' + esc(x.oggetto || "") + '</div><div class="metas" style="margin-top:5px">' +
+      [[ico("calendar"), dmy(x.data)], [ico(cat[1]), x.categoria], [ico("users"), x.amministrazione]].filter(function (f) { return f[1]; })
+        .map(function (f) { return "<span>" + f[0] + esc(f[1]) + "</span>"; }).join("") + '</div><div class="mbadges">' + stateBadge(st) +
+      (st !== "Archiviata" && x.scadenza ? dueBadge(x.scadenza) : "") + "</div></div><span></span></div></div>";
+    h += '<div class="card">' + head("doc", "Riassunto") + '<div class="prose">' + esc(x.riassunto || "—") + "</div></div>";
+    var facts = [["mail", "Mittente", x.mittente], ["clip", "Allegati", x.allegati], ["clock", "Scadenza", x.scadenza ? longDate(x.scadenza) : null]].filter(function (f) { return f[2]; });
+    if (facts.length || x.link) h += '<div class="card">' + head("info", "Dettagli") + '<dl class="facts">' + facts.map(function (f) {
+      return "<dt>" + ico(f[0]) + " " + f[1] + "</dt><dd>" + esc(f[2]) + "</dd>"; }).join("") + "</dl>" +
+      (x.link ? '<div style="margin-top:12px"><a class="btn" href="' + esc(x.link) + '" target="_blank" rel="noopener" data-ext>' + ico("mail") + "Apri l'email in Gmail</a></div>" : "") + "</div>";
+    var rs = list(C().riunioni).filter(function (r) { return (r.comunicazioni || []).indexOf(id) >= 0; });
+    rs.forEach(function (r) { h += '<div class="sect">' + ico("users") + "Assemblea collegata</div>" + meetCard(r); });
     var sp = list(C().spese).filter(function (s) { return s.comunicazione === id; });
-    if (sp.length) h += '<div class="card"><h2>Spese collegate</h2>' + sp.map(speseRow).join("") + "</div>";
-    return h;
+    if (sp.length) h += '<div class="card">' + head("euro", "Importi collegati", sp.length) + sp.map(speseRow).join("") + "</div>";
+    return '<div class="stack">' + h + "</div>";
   }
+
+  // ---- pratiche
   function cCases() {
     var ps = list(C().pratiche).sort(function (a, b) { return ((a.stato === "Chiusa") - (b.stato === "Chiusa")) || (b.aggiornamento || "").localeCompare(a.aggiornamento || ""); });
     if (!ps.length) return empty("Nessuna pratica.");
-    return ps.map(function (p) {
-      var cl = p.stato === "Chiusa" ? "" : p.stato === "In attesa di risposta" ? "soon" : "todo";
-      return '<div class="card"><div class="ghead"><span class="t">' + esc(p.pratica || "") + '</span><span class="badge ' + cl + '">' + esc(p.stato || "Aperta") + '</span></div><dl class="facts">' +
-        [["Tipo", p.tipo], ["Controparte", p.controparte], ["Aperta il", p.apertura ? dmy(p.apertura) : null], ["Ultimo aggiornamento", p.aggiornamento ? dmy(p.aggiornamento) : null],
-         ["Situazione", p.situazione], ["Prossimo passo", p.prossimo_passo]].filter(function (f) { return f[1]; }).map(function (f) { return "<dt>" + f[0] + "</dt><dd>" + esc(f[1]) + "</dd>"; }).join("") +
-        "</dl>" + (p.link ? '<div style="margin-top:10px"><a class="btn" href="' + esc(p.link) + '" target="_blank" rel="noopener" data-ext>Apri il thread in Gmail</a></div>' : "") + "</div>";
-    }).join("");
+    return '<div class="stack cgrid">' + ps.map(function (p) {
+      var closed = p.stato === "Chiusa", wait = p.stato === "In attesa di risposta";
+      var badge = '<span class="badge ' + (closed ? "ok" : wait ? "soon" : "todo") + '">' + ico(closed ? "check" : wait ? "hourglass" : "folder") + esc(String(p.stato || "Aperta").toLowerCase()) + "</span>";
+      var metas = [["folder", p.tipo], ["users", p.controparte], ["calendar", p.apertura ? "aperta il " + dmy(p.apertura) : null], ["history", p.aggiornamento ? "aggiornata il " + dmy(p.aggiornamento) : null]]
+        .filter(function (f) { return f[1]; }).map(function (f) { return "<span>" + ico(f[0]) + esc(f[1]) + "</span>"; }).join("");
+      return '<div class="card meet"><div class="chead">' + cic("folder", closed ? "--c8" : "--c5") + '<div><div class="t">' + esc(p.pratica || "") + '</div><div class="mbadges">' + badge + "</div></div><span></span></div>" +
+        (metas ? '<div class="metas">' + metas + "</div>" : "") +
+        (p.situazione ? "<div>" + head("info", "Situazione") + '<div class="prose" style="font-size:14px">' + esc(p.situazione) + "</div></div>" : "") +
+        (p.prossimo_passo && !closed ? '<div class="callout">' + ico("arrow") + '<div><span class="h">Prossimo passo</span>' + esc(p.prossimo_passo) + "</div></div>" : "") +
+        (p.link ? '<div><a class="btn" href="' + esc(p.link) + '" target="_blank" rel="noopener" data-ext>' + ico("mail") + "Apri il thread in Gmail</a></div>" : "") + "</div>";
+    }).join("") + "</div>";
   }
+
+  // ---- quote e spese
   function speseRow(s) {
-    return '<div class="com"><span><div class="t">' + esc(s.voce || "") + '</div><div class="m">' + [s.tipo, s.periodo, s.data ? dmy(s.data) : null].filter(Boolean).map(esc).join(" · ") + "</div></span>" +
-      '<span style="text-align:right"><div class="num">' + (s.importo != null ? money(s.importo) : '<span class="sub">importo nel PDF</span>') + "</div>" + (s.scadenza ? dueBadge(s.scadenza) : "") + "</span>" +
-      (s.note ? '<span class="r">' + esc(s.note) + "</span>" : "") + "</div>";
+    var cat = catOf(s.tipo);
+    return '<div class="com wi w3">' + cic(cat[1], cat[2]) + '<span><div class="t">' + esc(s.voce || "") + '</div><div class="m">' +
+      [s.tipo, s.periodo, s.data ? dmy(s.data) : null].filter(Boolean).map(esc).join(" · ") + "</div></span>" +
+      '<span class="bd"><div class="num" style="font-weight:600">' + (s.importo != null ? money(s.importo) : '<span class="sub">importo nel PDF</span>') + "</div>" +
+      (s.scadenza ? dueBadge(s.scadenza) : "") + "</span>" + (s.note ? '<span class="r">' + esc(s.note) + "</span>" : "") + "</div>";
   }
   function cSpese() {
     var sp = list(C().spese).sort(byDate("data"));
     if (!sp.length) return empty("Nessuna spesa in archivio.");
     var years = {};
     sp.forEach(function (s) { var y = (s.data || "").slice(0, 4) || "—"; years[y] = years[y] || { tot: 0, items: [] }; years[y].items.push(s); if (s.importo != null) years[y].tot += s.importo; });
-    return Object.keys(years).sort().reverse().map(function (y) {
-      return '<div class="card"><div class="ghead"><span class="t">' + y + '</span><span class="s num">' + (years[y].tot ? "totale noto " + money(years[y].tot) : "") + "</span></div>" + years[y].items.map(speseRow).join("") + "</div>";
-    }).join("") + '<div class="sub">Il totale comprende solo gli importi letti nelle email o nei PDF.</div>';
+    return '<div class="stack">' + Object.keys(years).sort().reverse().map(function (y) {
+      return '<div class="card"><div class="ysum"><span class="y">' + y + '</span><span class="s">' + years[y].items.length + (years[y].items.length === 1 ? " voce" : " voci") +
+        (years[y].tot ? ' · totale noto <b class="num">' + money(years[y].tot) + "</b>" : "") + "</span></div>" + years[y].items.map(speseRow).join("") + "</div>";
+    }).join("") + '<div class="sub">I pagamenti sono automatici. Il totale comprende solo gli importi letti nelle email o nei PDF.</div></div>';
   }
-  function cMeet() {
-    var rs = list(C().riunioni).sort(byDate("data")), dec = list(C().decisioni);
-    if (!rs.length && !dec.length) return empty("Nessuna assemblea in archivio.");
-    var h = rs.map(function (r) {
-      var ds = dec.filter(function (d) { return d.riunione === r.id; }).sort(function (a, b) { return (a.punto || 0) - (b.punto || 0); });
-      return '<div class="card"><div class="ghead"><span class="t">' + esc(r.riunione || "Riunione") + '</span><span class="badge">' + esc(r.stato || "") + "</span></div>" +
-        '<div class="sub">' + [r.tipo, r.data ? dmy(r.data) : null].filter(Boolean).map(esc).join(" · ") + "</div>" +
-        (r.ordine_del_giorno ? '<h2 style="margin-top:12px">Ordine del giorno</h2><div class="prose">' + esc(r.ordine_del_giorno) + "</div>" : "") +
-        (r.da_fare ? '<h2 style="margin-top:12px">Da fare / da pagare</h2><div class="prose">' + esc(r.da_fare) + "</div>" : "") +
-        (ds.length ? '<h2 style="margin-top:12px">Decisioni</h2>' + ds.map(decRow).join("") : r.decisioni ? '<h2 style="margin-top:12px">Decisioni</h2><div class="prose">' + esc(r.decisioni) + "</div>" : "") + "</div>";
-    }).join("");
-    var orphan = dec.filter(function (d) { return !rs.some(function (r) { return r.id === d.riunione; }); });
-    if (orphan.length) h += '<div class="card"><h2>Altre decisioni</h2>' + orphan.map(decRow).join("") + "</div>";
-    return h;
-  }
-  function decRow(d) {
-    var cl = d.esito === "Approvata" ? "up" : d.esito === "Respinta" ? "down" : "";
-    return '<div class="com"><span><div class="t">' + (d.punto ? d.punto + ". " : "") + esc(d.decisione || "") + '</div><div class="m">' + [d.argomento, d.rate].filter(Boolean).map(esc).join(" · ") + "</div></span>" +
-      '<span style="text-align:right"><div class="' + cl + '">' + esc(d.esito || "") + "</div>" + (d.importo != null ? '<div class="num">' + money(d.importo) + "</div>" : "") + "</span>" +
-      (d.cosa_fare ? '<span class="r"><b>Cosa fare:</b> ' + esc(d.cosa_fare) + "</span>" : "") + "</div>";
-  }
+
+  // ---- regolamento
   function cNorme() {
-    var ns = list(C().norme).sort(byDate("data"));
+    var ns = list(C().norme).sort(function (a, b) { return ((b.in_vigore ? 1 : 0) - (a.in_vigore ? 1 : 0)) || (b.data || "").localeCompare(a.data || ""); });
     if (!ns.length) return empty("Nessuna norma in archivio.");
-    return ns.map(function (n) {
-      return '<div class="card"><div class="ghead"><span class="t">' + esc(n.norma || "") + "</span>" + (n.in_vigore ? '<span class="badge todo">in vigore</span>' : '<span class="badge">superata</span>') + "</div>" +
-        '<div class="sub">' + [n.argomento, n.data ? dmy(n.data) : null].filter(Boolean).map(esc).join(" · ") + '</div><div class="prose" style="margin-top:8px">' + esc(n.riassunto || "") + "</div></div>";
-    }).join("");
+    return '<div class="stack cgrid">' + ns.map(function (n) {
+      return '<div class="card meet"><div class="chead">' + cic("book", n.in_vigore ? "--c4" : "--c8") + '<div><div class="t">' + esc(n.norma || "") + '</div><div class="metas" style="margin-top:4px">' +
+        [["book", n.argomento], ["calendar", n.data ? dmy(n.data) : null]].filter(function (f) { return f[1]; }).map(function (f) { return "<span>" + ico(f[0]) + esc(f[1]) + "</span>"; }).join("") +
+        "</div></div>" + (n.in_vigore ? '<span class="badge ok">' + ico("check") + "in vigore</span>" : '<span class="badge">superata</span>') + "</div>" +
+        (n.riassunto ? '<div class="prose" style="font-size:14px">' + esc(n.riassunto) + "</div>" : "") + "</div>";
+    }).join("") + "</div>";
   }
 
   // ---------------------------------------------------------------- Crypto (sezione "crypto" dell'archivio, da Kraken)
@@ -609,13 +964,15 @@ button.tile:hover { border-color: var(--accent); }
   }
   function kMoves() {
     var s = K().summary; if (!s) return empty("Nessun movimento.");
-    var ms = s.moves.slice().reverse(), h = '<div class="card"><div class="trs">', month = "";
+    // le ricompense di staking non compaiono nell'elenco: restano nel totale ("Staking ricevuto" e KPI Realizzato)
+    var ms = s.moves.filter(function (m) { return m.kind !== "Staking"; }).reverse(), h = '<div class="card"><div class="trs">', month = "";
+    if (!ms.length) h += '<div class="sub">Nessun movimento negli ultimi 6 mesi.</div>';
     ms.forEach(function (m) {
       var mo = m.date.slice(0, 7);
       if (mo !== month) { month = mo; h += '<div class="month">' + MONTHS_L[+mo.slice(5, 7) - 1] + " " + mo.slice(0, 4) + "</div>"; }
       h += kMoveRow(m);
     });
-    return h + '</div></div><div class="sub">Euro versati ' + money(s.eur_deposited) + " · prelevati " + money(s.eur_withdrawn) + ". Le ricompense di staking sono raggruppate per mese.</div>";
+    return h + '</div></div><div class="sub">Euro versati ' + money(s.eur_deposited) + " · prelevati " + money(s.eur_withdrawn) + ". Le ricompense di staking non sono elencate: sono comprese nelle quantità e nel valore di ogni crypto.</div>";
   }
   function kAsset(a) {
     var s = K().summary, p = (s.positions || []).filter(function (x) { return x.asset === a; })[0];
@@ -624,7 +981,7 @@ button.tile:hover { border-color: var(--accent); }
       cell("Prezzo medio di carico", p.unknown_cost ? "sconosciuto" : money(p.avg_price)) + cell("Prezzo di mercato", money(p.price)) +
       cell("Valore", money(p.value)) + cell("Costo", money(p.cost)) + cell("P&amp;L", '<span class="' + cls(p.pnl) + '">' + smoney(p.pnl) + "</span>") +
       cell("Staking ricevuto", kq(p.rewards)) + "</div></div>";
-    var ms = s.moves.filter(function (m) { return m.asset === a || (m.from && m.from[a]); }).reverse();
+    var ms = s.moves.filter(function (m) { return m.kind !== "Staking" && (m.asset === a || (m.from && m.from[a])); }).reverse();
     return h + '<div class="card"><h2>Movimenti (' + ms.length + ')</h2><div class="trs">' + ms.map(kMoveRow).join("") + "</div></div>";
   }
   function kHist() {
